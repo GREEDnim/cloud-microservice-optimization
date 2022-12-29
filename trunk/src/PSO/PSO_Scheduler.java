@@ -15,24 +15,31 @@ import java.util.*;
 
 public class PSO_Scheduler {
 
+
     private static List<Cloudlet> cloudletList = new LinkedList<>();
     private static List<Vm> vmList;
-//    private static Datacenter[] datacenter;
-    private static Datacenter datacenter;
+    private static Datacenter[] datacenter;
+    //private static Datacenter datacenter;
     private static PSO PSOSchedularInstance;
     private static double mapping[];
     private static double[][] commMatrix;
     private static double[][] execMatrix;
 
+    /**
+     * 创建用于存放虚拟机的容器。该列表稍后被传递给代理
+     * @param userId
+     * @param vms
+     * @return
+     */
     private static List<Vm> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
 
-        //VM Parameters
+        //VM Parameters --需要重新设置
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
-        int mips = 800;
-        long bw = 1000;
+        int mips = 800;//每秒百万指令
+        long bw = 1000;//带宽
         int pesNumber = 1; //number of cpus
         String vmm = "Xen"; //VMM name
 
@@ -47,8 +54,8 @@ public class PSO_Scheduler {
         return list;
     }
 
-    protected static void createTasks(int brokerId,String filePath, int taskNum)
-    {
+
+    protected static void createTasks(int brokerId,String filePath, int taskNum) {
         try
         {
             @SuppressWarnings("resource")
@@ -56,16 +63,16 @@ public class PSO_Scheduler {
             String data = null;
             int index = 0;
 
-            //cloudlet properties.
+            //cloudlet properties. 云任务属性 需要改为三种特征的任务
             int pesNumber = 1;
-            long fileSize = 1000;
-            long outputSize = 1000;
+            long fileSize = 200;
+            long outputSize = 200;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
             while ((data = br.readLine()) != null)
             {
                 System.out.println(data);
-                String[] taskLength=data.split("\t");//tasklength[i]是任务执行的耗费（指令数量）
+                String[] taskLength=data.split("\t");   //tasklength[i]是任务执行的耗费（指令数量）
                 for(int j=0;j<20;j++){
                     Cloudlet task=new Cloudlet(index+j, (long) Double.parseDouble(taskLength[j]), pesNumber, fileSize,
                             outputSize, utilizationModel, utilizationModel,
@@ -74,7 +81,7 @@ public class PSO_Scheduler {
                     cloudletList.add(task);
                     if(cloudletList.size()==taskNum)
                     {
-                        br.close();
+                        br.close() ;
                         return;
                     }
                 }
@@ -120,7 +127,7 @@ public class PSO_Scheduler {
         mapping = PSOSchedularInstance.run();
 
         try {
-            String filePath = "D:\\github\\cloudsim-package\\modules\\cloudsim-examples\\src\\main\\java\\org\\cloudbus\\cloudsim\\examples\\cloudlets.txt";
+            String filePath = "cloudlets1.txt";
             int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = false;  // mean trace events
@@ -128,11 +135,11 @@ public class PSO_Scheduler {
             CloudSim.init(num_user, calendar, trace_flag);
 
             // Second step: Create Datacenters
-//            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
-//            for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
-//                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
-//            }
-            datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
+            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
+                for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
+                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
+            }
+            //datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
 
             //Third step: Create Broker
             PSODatacenterBroker broker = createBroker("Broker_0");
@@ -140,7 +147,7 @@ public class PSO_Scheduler {
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
             vmList = createVM(brokerId, Constants.NO_OF_VMS);
-//            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
+            //cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
             createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
             // mapping our dcIds to cloudsim dcIds
             HashSet<Integer> dcIds = new HashSet<>();
@@ -169,7 +176,7 @@ public class PSO_Scheduler {
 
             CloudSim.stopSimulation();
 
-//            printCloudletList(newList);
+            //printCloudletList(newList);
             PrintResults(newList);
             Log.printLine(PSO_Scheduler.class.getName() + " finished!");
         } catch (Exception e) {
@@ -182,9 +189,8 @@ public class PSO_Scheduler {
         return new PSODatacenterBroker(name);
     }
 
-    /**
+    /** 打印云任务对象 任务id 执行时间 结束时间
      * Prints the Cloudlet objects
-     *
      * @param list list of Cloudlets
      */
     private static void printCloudletList(List<Cloudlet> list) {
@@ -222,17 +228,24 @@ public class PSO_Scheduler {
         PSOSchedularInstance.printBestFitness();
     }
 
-    private static double PrintResults(List<Cloudlet> list)
-    {
+    private static double PrintResults(List<Cloudlet> list) {
         int size = list.size();
         Cloudlet cloudlet;
 
         String indent = "    ";
         Log.printLine();
         Log.printLine("================ Execution Result ==================");
-        Log.printLine("No."+indent +"Cloudlet ID" + indent + "STATUS" + indent
-                + "Data center ID" + indent + "VM ID" + indent+"VM mips"+ indent +"CloudletLength"+indent+ "Time"
-                + indent + "Start Time" + indent + "Finish Time");
+        Log.printLine("No."+indent +
+                "Cloudlet ID" + indent +
+                "STATUS" + indent +
+                "Data center ID" + indent +
+                "VM ID" + indent+
+                "VM mips"+ indent +
+                "Current VM MIPS" + indent+
+                "CloudletLength"+ indent+
+                "Time" + indent +
+                "Start Time" + indent +
+                "Finish Time");
         double mxFinishTime = 0;
         DecimalFormat dft = new DecimalFormat("###.##");
         for (int i = 0; i < size; i++)
@@ -244,10 +257,15 @@ public class PSO_Scheduler {
             {
                 Log.print("SUCCESS");
 
-                Log.printLine(indent +indent + indent + cloudlet.getResourceId()
+                Log.printLine(
+                        indent +indent + indent + cloudlet.getResourceId()
                         + indent + indent + indent + cloudlet.getVmId()
                         + indent + indent + getVmById(cloudlet.getVmId()).getMips()
-                        + indent + indent + cloudlet.getCloudletLength()
+                        + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedMips()
+                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedMips()
+                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedBw()
+                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentRequestedRam()
+                        + indent + indent + cloudlet.getCloudletLength()  //任务长度
                         + indent + indent+ indent + indent
                         + dft.format(cloudlet.getActualCPUTime()) + indent
                         + indent + dft.format(cloudlet.getExecStartTime())
@@ -261,8 +279,7 @@ public class PSO_Scheduler {
         return mxFinishTime;
     }
 
-    public static Vm getVmById(int vmId)
-    {
+    public static Vm getVmById(int vmId){
         for(Vm v:vmList)
         {
             if(v.getId()==vmId)
@@ -270,4 +287,5 @@ public class PSO_Scheduler {
         }
         return null;
     }
+
 }

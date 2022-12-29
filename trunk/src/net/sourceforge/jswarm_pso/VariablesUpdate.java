@@ -20,8 +20,8 @@ public class VariablesUpdate {
 	 * @param swarm : Swarm to update
 	 */
 	public void update(Swarm swarm) {
-////		 Nothing updated in this case (build your own VariablesUpdate class)
-////		 e.g. (exponential update):
-//		 swarm.setInertia( 0.99 * swarm.getInertia() );
+		//Nothing updated in this case (build your own VariablesUpdate class)
+		//e.g. (exponential update):
+ 		//swarm.setInertia( 0.99 * swarm.getInertia() );
 	}
 }

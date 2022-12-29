@@ -28,7 +28,7 @@ public class SAPSO {
                 System.out.printf("Gloabl best at iteration (%d): %f\n", i, swarm.getBestFitness());
             }
             double w = GetWeightBySAStrategy(swarm.getInertia(),i);
-//            swarm.setInertia(w);
+            // swarm.setInertia(w);
         }
         System.out.println("\nThe best fitness value: " + swarm.getBestFitness() + "\nBest makespan: " + ff.calcMakespan(swarm.getBestParticle().getBestPosition()));
         System.out.println("The best totalcost:"+ff.calcTotalTime(swarm.getBestParticle().getPosition()));
@@ -39,10 +39,9 @@ public class SAPSO {
         return swarm.getBestPosition();
     }
 
-    private double GetWeightBySAStrategy(double w,int iter)
-    {
+    private double GetWeightBySAStrategy(double w,int iter) {
         double value = 0.0;
-//        使用模拟退火的策略
+        //使用模拟退火的策略
         return value;
     }
 

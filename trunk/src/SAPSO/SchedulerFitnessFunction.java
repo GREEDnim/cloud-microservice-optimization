@@ -21,6 +21,11 @@ public class SchedulerFitnessFunction extends FitnessFunction {
 //        return calcMakespan(position);
     }
 
+    /**
+     * 计算总时间：totalcost =
+     * @param position
+     * @return
+     */
     public double calcTotalTime(double[] position) {
         double totalCost = 0;
         for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
@@ -43,8 +48,7 @@ public class SchedulerFitnessFunction extends FitnessFunction {
         return makespan;
     }
 
-    public  double calcLoadCost(double[] position)
-    {
+    public  double calcLoadCost(double[] position) {
         double utilization = 0.0;
         for(int i =0;i<Constants.NO_OF_TASKS;i++)
         {

@@ -18,7 +18,7 @@ public class SAWPSO_SchedulerTestOne {
 
     private static List<Cloudlet> cloudletList = new LinkedList<>();
     private static List<Vm> vmList;
-    //    private static Datacenter[] datacenter;
+    //private static Datacenter[] datacenter;
     private static Datacenter datacenter;
     private static SAWPSO SAWPSOSchedularInstance;
     private static double mapping[];

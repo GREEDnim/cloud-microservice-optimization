@@ -15,39 +15,39 @@ public class Swarm {
 	public static double DEFAULT_PARTICLE_INCREMENT = 0.9;
 	public static double VELOCITY_GRAPH_FACTOR = 10.0;
 
-	/** Best fitness so far (global best) */
+	/** 1.Best fitness so far (global best) */
 	double bestFitness;
-	/** Index of best particle so far */
+	/** 2.Index of best particle so far */
 	int bestParticleIndex;
-	/** Best position so far (global best) */
+	/** 3.Best position so far (global best) */
 	double bestPosition[];
-	/** Fitness function for this swarm */
+	/** 4.Fitness function for this swarm */
 	FitnessFunction fitnessFunction;
-	/** Global increment (for velocity update), usually called 'c2' constant */
+	/** 5.Global increment (for velocity update), usually called 'c2' constant */
 	double globalIncrement;
-	/** Inertia (for velocity update), usually called 'w' constant */
+	/** 6.Inertia (for velocity update), usually called 'w' constant */
 	double inertia;
-	/** Maximum position (for each dimention) */
+	/** 7.Maximum position (for each dimension) */
 	double maxPosition[];
-	/** Maximum Velocity (for each dimention) */
+	/** 8.Maximum Velocity (for each dimention) */
 	double maxVelocity[];
-	/** Minimum position (for each dimention) */
+	/** 9.Minimum position (for each dimention) */
 	double minPosition[];
-	/** Minimum Velocity for each dimention. WARNING: Velocity is no in Abs value (so setting minVelocity to 0 is NOT correct!) */
+	/** 10.Minimum Velocity for each dimention. WARNING: Velocity is no in Abs value (so setting minVelocity to 0 is NOT correct!) */
 	double minVelocity[];
-	/** How many times 'particle.evaluate()' has been called? */
+	/** 11.How many times 'particle.evaluate()' has been called? */
 	int numberOfEvaliations;
-	/** Number of particles in this swarm */
+	/** 12.Number of particles in this swarm */
 	int numberOfParticles;
-	/** Particle's increment (for velocity update), usually called 'c1' constant */
+	/** 13.Particle's increment (for velocity update), usually called 'c1' constant */
 	double particleIncrement;
-	/** Particles in this swarm */
+	/** 14.Particles in this swarm */
 	Particle particles[];
-	/** Particle update strategy */
+	/** 15.Particle update strategy */
 	ParticleUpdate particleUpdate;
-	/** A sample particles: Build other particles based on this one */
+	/** 16.A sample particles: Build other particles based on this one */
 	Particle sampleParticle;
-	/** Variables update */
+	/** 17.Variables update */
 	VariablesUpdate variablesUpdate;
 
 	//-------------------------------------------------------------------------
@@ -87,29 +87,29 @@ public class Swarm {
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Evaluate fitness function for every particle 
+	 * Evaluate fitness function for every particle  适应度函数
 	 * Warning: particles[] must be initialized and fitnessFunction must be setted
 	 */
 	public void evaluate() {
 		if( particles == null ) throw new RuntimeException("No particles in this swarm! May be you need to call Swarm.init() method");
 		if( fitnessFunction == null ) throw new RuntimeException("No fitness function in this swarm! May be you need to call Swarm.setFitnessFunction() method");
 
-		// Initialize
+		// Initialize-初始化
 		if( Double.isNaN(bestFitness) ) {
 			bestFitness = (fitnessFunction.isMaximize() ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
 			bestParticleIndex = -1;
 		}
 
-		//---
+		//---评估每个粒子 找到最好的
 		// Evaluate each particle (and find the 'best' one)
 		//---
 		for( int i = 0; i < particles.length; i++ ) {
-			// Evaluate particle
+			// Evaluate particle  计算粒子适应度函数
 			double fit = fitnessFunction.evaluate(particles[i]);
 
 			numberOfEvaliations++; // Update counter
 
-			// Update 'best global' position
+			// 6.Update 'best global' position 更新粒子的全局最优解
 			if( (fitnessFunction.isMaximize() && (fit > bestFitness)) // Maximize?
 					|| (!fitnessFunction.isMaximize() && (fit < bestFitness)) ) { // Minimize
 				bestFitness = fit; // Copy best fitness, index, and position vector
@@ -121,11 +121,11 @@ public class Swarm {
 		}
 	}
 
-	/**
+	/**进行迭代
 	 * Make an iteration: 
-	 * 	- evaluates the swarm 
-	 * 	- updates positions and velocities
-	 * 	- applies positions and velocities constraints 
+	 * 	- evaluates the swarm  1、计算种群
+	 * 	- updates positions and velocities  2、更新位置和速度
+	 * 	- applies positions and velocities constraints   3、应用位置和速度限制
 	 */
 	public void evolve() {
 		// Init (if not already done)
@@ -441,24 +441,24 @@ public class Swarm {
 		return stats;
 	}
 
-	/**
+	/** 更新每个粒子的位置和速度，保证位置和速度约束     对应萤火虫算法的位置更新
 	 * Update every particle's position and velocity, also apply position and velocity constraints (if any)
 	 * Warning: Particles must be already evaluated
 	 */
 	public void update() {
-		// Initialize a particle update iteration
+		// 1.Initialize a particle update iteration  初始化
 		particleUpdate.begin(this);
 
 		// For each particle...
 		for( int i = 0; i < particles.length; i++ ) {
-			// Update particle's position and speed
+			// 2.Update particle's position and speed 更新位置和速度
 			particleUpdate.update(this, particles[i]);
 
-			// Apply position and velocity constraints
+			// 3.Apply position and velocity constraints 应用位置和速度限制
 			particles[i].applyConstraints(minPosition, maxPosition, minVelocity, maxVelocity);
 		}
 
-		// Finish a particle update iteration
+		// 4.Finish a particle update iteration 完成更新
 		particleUpdate.end(this);
 	}
 }

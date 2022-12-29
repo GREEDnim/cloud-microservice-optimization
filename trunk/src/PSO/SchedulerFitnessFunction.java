@@ -5,7 +5,7 @@ import sun.misc.VM;
 import utils.Constants;
 import utils.GenerateMatrices;
 
-public class SchedulerFitnessFunction extends FitnessFunction {
+public class SchedulerFitnessFunction extends FitnessFunction{
     private static double[][] execMatrix, commMatrix;
 
     SchedulerFitnessFunction() {
@@ -18,7 +18,7 @@ public class SchedulerFitnessFunction extends FitnessFunction {
     public double evaluate(double[] position) {
         double alpha = 0.3;
         return alpha * calcTotalTime(position) + (1 - alpha) * calcMakespan(position);
-//        return calcMakespan(position);
+        //return calcMakespan(position);
     }
 
     private double calcTotalTime(double[] position) {
@@ -27,6 +27,7 @@ public class SchedulerFitnessFunction extends FitnessFunction {
             int dcId = (int) position[i];
             totalCost += execMatrix[i][dcId] + commMatrix[i][dcId];
         }
+
         return totalCost;
     }
 
@@ -43,8 +44,12 @@ public class SchedulerFitnessFunction extends FitnessFunction {
         return makespan;
     }
 
-    public  double calcLoadCost(double[] position)
-    {
+    /**
+     * 计算加载代价
+     * @param position
+     * @return
+     */
+    public  double calcLoadCost(double[] position) {
         double utilization = 0.0;
         for(int i =0;i<Constants.NO_OF_TASKS;i++)
         {
@@ -54,4 +59,5 @@ public class SchedulerFitnessFunction extends FitnessFunction {
         }
         return utilization;
     }
+
 }

@@ -54,13 +54,16 @@ public class SchedulerParticle extends Particle {
         return output;
     }
 
+    /**
+     * 初始化 变异
+     */
     @Override
     public void InitMutation()
     {
-        //置换规则获取随机两个任务,并取对应的虚拟机
+        //1、置换规则获取随机两个任务,并取对应的虚拟机
         double[] position = this.getBestPosition();
 
-        //扰动当前局部最优解,得到first，second的值 置换规则
+        //2、扰动当前局部最优解,得到first，second的值 置换规则
         Random rd = new Random();
         int first=rd.nextInt(Constants.NO_OF_TASKS);//任务的序号
         int second=rd.nextInt(Constants.NO_OF_TASKS);//另一个任务的序号

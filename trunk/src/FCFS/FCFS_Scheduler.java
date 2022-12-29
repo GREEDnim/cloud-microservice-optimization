@@ -86,10 +86,10 @@ public class FCFS_Scheduler {
             CloudSim.init(num_user, calendar, trace_flag);
 
             // Second step: Create Datacenters
-//            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
-//            for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
-//                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
-//            }
+            // datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
+            // for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
+            //    datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
+            // }
 
             datacenter = DatacenterCreator.createDatacenter("Datacenter_", Constants.NO_OF_VMS);
             //Third step: Create Broker

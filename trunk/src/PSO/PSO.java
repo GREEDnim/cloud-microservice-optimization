@@ -13,6 +13,10 @@ public class PSO {
     }
 
 
+    /**
+     * 粒子群算法迭代过程
+     * @return
+     */
     public double[] run() {
         swarm = new Swarm(Constants.POPULATION_SIZE, new SchedulerParticle(), ff);
 
@@ -27,7 +31,7 @@ public class PSO {
             if (i % 10 == 0) {
                 System.out.printf("Gloabl best at iteration (%d): %f\n", i, swarm.getBestFitness());
             }
-//            swarm.setInertia();
+            //swarm.setInertia();
         }
         System.out.println("\nThe best fitness value: " + swarm.getBestFitness() + "\nBest makespan: " + ff.calcMakespan(swarm.getBestParticle().getBestPosition()));
 

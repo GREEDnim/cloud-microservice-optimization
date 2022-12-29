@@ -18,8 +18,8 @@ public class SAWPSO_Scheduler {
 
     private static List<Cloudlet> cloudletList = new LinkedList<>();
     private static List<Vm> vmList;
-//    private static Datacenter[] datacenter;
-    private static Datacenter datacenter;
+    private static Datacenter[] datacenter;
+    //private static Datacenter datacenter;
     private static SAWPSO SAWPSOSchedularInstance;
     private static double mapping[];
     private static double[][] commMatrix;
@@ -121,19 +121,19 @@ public class SAWPSO_Scheduler {
         mapping = SAWPSOSchedularInstance.run();
 
         try {
-            String filePath = "D:\\github\\cloudsim-package\\modules\\cloudsim-examples\\src\\main\\java\\org\\cloudbus\\cloudsim\\examples\\cloudlets.txt";
+            String filePath = "cloudlets.txt";
             int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = false;  // mean trace events
 
             CloudSim.init(num_user, calendar, trace_flag);
 
-            // Second step: Create Datacenters
-//            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
-//            for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
-//                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
-//            }
-            datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
+            //Second step: Create Datacenters
+            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
+                for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
+                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
+            }
+            //datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
 
             //Third step: Create Broker
             SAWPSODatacenterBroker broker = createBroker("Broker_0");

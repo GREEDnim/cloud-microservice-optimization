@@ -32,8 +32,8 @@ public abstract class FitnessFunction {
 	//-------------------------------------------------------------------------
 	
 	/**
-	 * Evaluates a particles at a given position
-	 * NOTE: You should write your own method!
+	 * Evaluates a particles at a given position 计算粒子在该位置的值
+	 * NOTE: You should write your own method!  重写自己的方法
 	 * 
 	 * @param position : Particle's position
 	 * @return Fitness function for a particle

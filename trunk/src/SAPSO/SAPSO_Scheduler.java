@@ -17,12 +17,13 @@ public class SAPSO_Scheduler {
 
     private static List<Cloudlet> cloudletList = new LinkedList<>();
     private static List<Vm> vmList;
-//    private static Datacenter[] datacenter;
+    //private static Datacenter[] datacenter;
     private static Datacenter datacenter;
     private static SAPSO SAPSOSchedularInstance;
     private static double mapping[];
     private static double[][] commMatrix;
     private static double[][] execMatrix;
+
 
     private static List<Vm> createVM(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
@@ -47,6 +48,13 @@ public class SAPSO_Scheduler {
         return list;
     }
 
+    /**
+     * 任务创建
+     * @param userId 用户id
+     * @param cloudlets 任务数量
+     * @param idShift 任务id
+     * @return 任务list
+     */
     private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift) {
         LinkedList<Cloudlet> list = new LinkedList<Cloudlet>();
 
@@ -60,7 +68,7 @@ public class SAPSO_Scheduler {
 
         for (int i = 0; i < cloudlets; i++) {
             int dcId = (int) (mapping[i]);
-//            long length = (long) (1e3 * (commMatrix[i][dcId] + execMatrix[i][dcId]));
+            //long length = (long) (1e3 * (commMatrix[i][dcId] + execMatrix[i][dcId]));
             long length = (long)(execMatrix[i][dcId]*1e3);
             cloudlet[i] = new Cloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
             cloudlet[i].setUserId(userId);
@@ -81,10 +89,10 @@ public class SAPSO_Scheduler {
             CloudSim.init(num_user, calendar, trace_flag);
 
             // Second step: Create Datacenters
-//            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
-//            for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
-//                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
-//            }
+            // datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
+            // for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
+            // datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
+            // }
             datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
 
             //Third step: Create Broker
@@ -101,8 +109,8 @@ public class SAPSO_Scheduler {
             mapping = SAPSOSchedularInstance.run();
             cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
 
-//            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
-            // mapping our dcIds to cloudsim dcIds
+            //cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
+            //mapping our dcIds to cloudsim dcIds
             HashSet<Integer> dcIds = new HashSet<>();
             HashMap<Integer, Integer> hm = new HashMap<>();
             for (Vm dc : vmList) {
