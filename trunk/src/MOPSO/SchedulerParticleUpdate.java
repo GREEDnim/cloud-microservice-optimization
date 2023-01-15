@@ -1,4 +1,4 @@
-package SAWPSO;
+package MOPSO;
 
 import net.sourceforge.jswarm_pso.Particle;
 import net.sourceforge.jswarm_pso.ParticleUpdate;
@@ -24,11 +24,11 @@ public class SchedulerParticleUpdate extends ParticleUpdate {
             x[i] = (int) (x[i] + v[i]);
         }
 
-        if(SAWPSO_Scheduler.class.getName()=="SAWPSO.SAWPSO_Scheduler")
+        if(MOPSO_Scheduler.class.getName()=="MOPSO.MOPSO_Scheduler")
         {
             particle.InitMutation();
         }
-        if(SAWPSO_SchedulerTestOne.class.getName()=="SAWPSO.SAWPSO_SchedulerTestOne")
+        if(MOPSO_SchedulerTestOne.class.getName()=="MOPSO.MOPSO_SchedulerTestOne")
         {
             particle.InitMutation();
         }

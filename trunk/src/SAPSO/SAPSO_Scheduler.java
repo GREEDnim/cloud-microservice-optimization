@@ -31,7 +31,7 @@ public class SAPSO_Scheduler {
 
         //VM Parameters
         long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
+        int ram = 1000; //vm memory (MB)
         int mips = 800;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
@@ -68,8 +68,8 @@ public class SAPSO_Scheduler {
 
         for (int i = 0; i < cloudlets; i++) {
             int dcId = (int) (mapping[i]);
-            //long length = (long) (1e3 * (commMatrix[i][dcId] + execMatrix[i][dcId]));
-            long length = (long)(execMatrix[i][dcId]*1e3);
+            long length = (long) ((commMatrix[i][dcId] + execMatrix[i][dcId]));
+            //long length = (long)(execMatrix[i][dcId]*1e3);
             cloudlet[i] = new Cloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
             cloudlet[i].setUserId(userId);
             list.add(cloudlet[i]);
@@ -215,6 +215,8 @@ public class SAPSO_Scheduler {
                 Log.printLine(indent +indent + indent + cloudlet.getResourceId()
                         + indent + indent + indent + cloudlet.getVmId()
                         + indent + indent + getVmById(cloudlet.getVmId()).getMips()
+                        + indent + indent + getVmById(cloudlet.getVmId()).getCurrentRequestedRam()
+                        + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedMips()
                         + indent + indent + cloudlet.getCloudletLength()
                         + indent + indent+ indent + indent
                         + dft.format(cloudlet.getActualCPUTime()) + indent

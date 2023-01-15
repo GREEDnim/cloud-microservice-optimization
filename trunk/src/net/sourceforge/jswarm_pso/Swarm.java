@@ -45,7 +45,7 @@ public class Swarm {
 	Particle particles[];
 	/** 15.Particle update strategy */
 	ParticleUpdate particleUpdate;
-	/** 16.A sample particles: Build other particles based on this one */
+	/** 16.A sample particles: Build other particles based on this one ----基于样本可以初始化更接近全局最优的粒子群*/
 	Particle sampleParticle;
 	/** 17.Variables update */
 	VariablesUpdate variablesUpdate;
@@ -100,11 +100,11 @@ public class Swarm {
 			bestParticleIndex = -1;
 		}
 
-		//---评估每个粒子 找到最好的
+		//---评估每个粒子---找到最好的
 		// Evaluate each particle (and find the 'best' one)
 		//---
 		for( int i = 0; i < particles.length; i++ ) {
-			// Evaluate particle  计算粒子适应度函数
+			// Evaluate particle  计算粒子适应度函数--自定义多个函数
 			double fit = fitnessFunction.evaluate(particles[i]);
 
 			numberOfEvaliations++; // Update counter
@@ -214,7 +214,7 @@ public class Swarm {
 	}
 
 	/**
-	 * Initialize every particle
+	 * Initialize every particle 初始化每个粒子-需要提前设置maxPosition[], minPosition[], maxVelocity[], minVelocity[]
 	 * Warning: maxPosition[], minPosition[], maxVelocity[], minVelocity[] must be initialized and setted
 	 */
 	public void init() {

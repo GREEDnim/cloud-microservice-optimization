@@ -36,7 +36,7 @@ public class ACO_Scheduler
 //        mapping = ACOSchedularInstance.run();
 
         try {
-            String filePath = "D:\\github\\cloudsim-package\\modules\\cloudsim-examples\\src\\main\\java\\org\\cloudbus\\cloudsim\\examples\\cloudlets.txt";
+            String filePath = "cloudlets1.txt";
             int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = false;  // mean trace events

@@ -47,14 +47,19 @@ public class ChaosStrategy
         this.chaosvalue = value;
     }
 
-    //计算拜托初始值影响，迭代500次，得到混沌状态值，基于Logistic映射产生
-    public void CalChaos()
-    {
+    //计算摆脱初始值影响，迭代500次，得到混沌状态值，
+    public void CalChaos() {
         Random rd = new Random();
-        double chaosvalue = LM(500,rd.nextDouble());
+        double chaosvalue = PLM(500,rd.nextDouble());
         setChaosValue(chaosvalue);
     }
 
+    /**
+     * 扰动策略1-(1-x)*x*u  u = 3.999
+     * @param n 迭代次数
+     * @param x0  迭代初始值
+     * @return
+     */
     public double LM(int n,double x0)
     {
         double result = x0;//迭代的初始值
@@ -66,6 +71,12 @@ public class ChaosStrategy
         return result;
     }
 
+    /**
+     * 混沌扰动- 1、x∈(0.0,0.5),
+     * @param n 迭代次数
+     * @param x0 初始值
+     * @return 改变后的初始值
+     */
     public double PLM(int n,double x0)
     {
         double result = x0;//迭代的初始值

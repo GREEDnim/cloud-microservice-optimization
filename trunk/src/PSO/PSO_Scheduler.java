@@ -38,7 +38,7 @@ public class PSO_Scheduler {
         //VM Parameters --需要重新设置
         long size = 10000; //image size (MB)
         int ram = 512; //vm memory (MB)
-        int mips = 800;//每秒百万指令
+        int mips = 1000;//每秒百万指令
         long bw = 1000;//带宽
         int pesNumber = 1; //number of cpus
         String vmm = "Xen"; //VMM name
@@ -147,8 +147,8 @@ public class PSO_Scheduler {
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
             vmList = createVM(brokerId, Constants.NO_OF_VMS);
-            //cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
-            createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
+            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
+            //createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
             // mapping our dcIds to cloudsim dcIds
             HashSet<Integer> dcIds = new HashSet<>();
             HashMap<Integer, Integer> hm = new HashMap<>();
@@ -261,10 +261,6 @@ public class PSO_Scheduler {
                         indent +indent + indent + cloudlet.getResourceId()
                         + indent + indent + indent + cloudlet.getVmId()
                         + indent + indent + getVmById(cloudlet.getVmId()).getMips()
-                        + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedMips()
-                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedMips()
-                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentAllocatedBw()
-                                + indent + indent + getVmById(cloudlet.getVmId()).getCurrentRequestedRam()
                         + indent + indent + cloudlet.getCloudletLength()  //任务长度
                         + indent + indent+ indent + indent
                         + dft.format(cloudlet.getActualCPUTime()) + indent

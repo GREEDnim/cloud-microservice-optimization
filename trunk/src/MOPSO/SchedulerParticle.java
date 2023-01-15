@@ -1,4 +1,4 @@
-package SAWPSO;
+package MOPSO;
 
 import net.sourceforge.jswarm_pso.Particle;
 import utils.ChaosStrategy;
@@ -28,6 +28,15 @@ public class SchedulerParticle extends Particle {
         count=0;
     }
 
+    public int Position(int i){
+        int result = 0;
+        for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
+            result = (int) getPosition()[j];
+        }
+        return result;
+    }
+
+
     @Override
     public String toString() {
         String output = "";
@@ -48,7 +57,7 @@ public class SchedulerParticle extends Particle {
     }
 
     /**
-     * 启动混沌的变异策略
+     * 启动混沌扰动策略--
      */
     @Override
     public void InitMutation()
@@ -58,11 +67,42 @@ public class SchedulerParticle extends Particle {
         if(Math.abs(temp)<0.005)
         {
             count++;
-            if(count>=10)//粒子连续10次判断都不活跃 进入变异环节
+            if(count>=5)//粒子连续5次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略
-                System.out.println("go particle mutation!");
+                System.out.println("go particle mutation!-粒子超出边界-启动变异策略");
+                ChaosStrategy instance = ChaosStrategy.getInstance();
+                instance.CalChaos();
+
+                double[] new_vel = new double[Constants.NO_OF_TASKS];
+                double[] new_pos = new double[Constants.NO_OF_TASKS];
+                for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
+                    //混沌映射方式生成变异粒子的速度和位置
+                    new_pos[i] = instance.PLM(1,instance.getChaosValue())*Constants.NO_OF_VMS;
+                    new_vel[i] = instance.LM(1,instance.getChaosValue());
+                }
+                setPosition(new_pos);
+                setVelocity(new_vel);
+            }
+        }
+    }
+
+    /**
+     * 启动混沌扰动策略--基于Logistic映射产生-Tent映射
+     */
+    public void MutationStrategy()
+    {
+        //变异策略部分。
+        double temp = this.getFitness()-this.getBestFitness();
+        if(Math.abs(temp)<0.005)
+        {
+            count++;
+            if(count>=5)//粒子连续5次判断都不活跃 进入变异环节
+            {
+                count=0;
+                //启动变异策略
+                System.out.println("go particle mutation!-粒子超出边界-启动变异策略");
                 ChaosStrategy instance = ChaosStrategy.getInstance();
                 instance.CalChaos();
 

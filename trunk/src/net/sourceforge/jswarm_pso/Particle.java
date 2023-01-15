@@ -53,13 +53,13 @@ public abstract class Particle {
 	// Methods
 	//-------------------------------------------------------------------------
 
-	/** Allocate memory */
+	/** Allocate memory-定义最优适应度值 */
 	public void allocate(int dimention) {
 		this.position = new double[dimention];
 		this.bestPosition = new double[dimention];
 		this.velocity = new double[dimention];
-		bestFitness = Double.NaN;
-		fitness = Double.NaN;
+		bestFitness = Double.NaN;//全局最优适应度值
+		fitness = Double.NaN; //适应度值
 		for( int i = 0; i < position.length; i++ )
 			bestPosition[i] = Double.NaN;
 	}

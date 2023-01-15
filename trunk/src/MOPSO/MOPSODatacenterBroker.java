@@ -1,4 +1,4 @@
-package SAWPSO;
+package MOPSO;
 
 
 import org.cloudbus.cloudsim.*;
@@ -9,11 +9,11 @@ import org.cloudbus.cloudsim.lists.VmList;
 
 import java.util.List;
 
-public class SAWPSODatacenterBroker extends DatacenterBroker {
+public class MOPSODatacenterBroker extends DatacenterBroker {
 
     private double[] mapping;
 
-    SAWPSODatacenterBroker(String name) throws Exception {
+    MOPSODatacenterBroker(String name) throws Exception {
         super(name);
     }
 
@@ -21,7 +21,17 @@ public class SAWPSODatacenterBroker extends DatacenterBroker {
         this.mapping = mapping;
     }
 
+    public void setUserId(int userId){
+
+    }
+
+    /**
+     * 分配任务到虚拟机
+     * @param cloudlist
+     * @return
+     */
     private List<Cloudlet> assignCloudletsToVms(List<Cloudlet> cloudlist) {
+
         int idx = 0;
         for (Cloudlet cl : cloudlist) {
             cl.setVmId((int) mapping[idx++]);
@@ -31,6 +41,7 @@ public class SAWPSODatacenterBroker extends DatacenterBroker {
 
     @Override
     protected void submitCloudlets() {
+        Log.print("任务数量检查"+cloudletList.size() + mapping.length);
         List<Cloudlet> tasks = assignCloudletsToVms(getCloudletList());
         int vmIndex = 0;
         for (Cloudlet cloudlet : tasks) {

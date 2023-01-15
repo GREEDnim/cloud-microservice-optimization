@@ -1,15 +1,15 @@
-package SAWPSO;
+package MOPSO;
 
 import net.sourceforge.jswarm_pso.Swarm;
 import utils.Calculator;
 import utils.Constants;
 
-public class SAWPSO {
+public class MOPSO {
     private static Swarm swarm;
     private static SchedulerParticle particles[];
     private static SchedulerFitnessFunction ff = new SchedulerFitnessFunction();
 
-    public SAWPSO() {
+    public MOPSO() {
         initParticles();
     }
 
@@ -19,8 +19,8 @@ public class SAWPSO {
      */
     public double[] run() {
         swarm = new Swarm(Constants.POPULATION_SIZE, new SchedulerParticle(), ff);
-        double w_max = 0.9;
-        double w_min = 0.5;
+        double w_max = 0.9;//最大权重
+        double w_min = 0.5;//最小权重
         swarm.setInertia(0.9);
         swarm.setMinPosition(0);
         swarm.setMaxPosition(Constants.NO_OF_VMS - 1);
@@ -29,15 +29,20 @@ public class SAWPSO {
         swarm.setParticleUpdate(new SchedulerParticleUpdate(new SchedulerParticle()));
         for (int i = 0; i < Constants.NO_OF_Iterations; i++) {
             double w = swarm.getInertia();//获取当前惯性权值
-            swarm.evolve();//算法正式的计算流程
+            swarm.evolve();//算法正式的计算流程---组合多个目标
             if (i % 10 == 0) {
                 System.out.printf("Gloabl best at iteration (%d): %f\n", i+1, swarm.getBestFitness());
             }
             w = CalSOW(w_max, w_min, i, w);
             swarm.setInertia(w);//设置惯性权值
         }
+        double[] Position = swarm.getBestParticle().getBestPosition();
+        for (int i=0;i<Position.length;i++){
+            System.out.println("粒子"+ i +"Position："+ Position[i]);
+        }
+        System.out.println("calcCostPerTime"+ff.calcCostPerTime(swarm.getBestParticle().getBestPosition()));
         System.out.println("\nThe best fitness value: " + swarm.getBestFitness() + "\nBest makespan: " + ff.calcMakespan(swarm.getBestParticle().getBestPosition()));
-        System.out.println("The best totalcost:"+ff.calcTotalTime(swarm.getBestParticle().getPosition()));
+        System.out.println("The best calcTotalTime:"+ff.calcTotalTime(swarm.getBestParticle().getPosition()));
         System.out.println("The best solution is: ");
         SchedulerParticle bestParticle = (SchedulerParticle) swarm.getBestParticle();
         System.out.println(bestParticle.toString());

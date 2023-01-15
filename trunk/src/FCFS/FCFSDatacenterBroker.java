@@ -8,6 +8,9 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Broker that schedules Tasks to the VMs
@@ -17,8 +20,11 @@ import java.util.ArrayList;
  */
 public class FCFSDatacenterBroker extends DatacenterBroker {
 
+    private Map<Integer, List<Cloudlet>> userCloudlets;
+
     public FCFSDatacenterBroker(String name) throws Exception {
         super(name);
+        userCloudlets = new HashMap<>();
     }
 
     //scheduling function

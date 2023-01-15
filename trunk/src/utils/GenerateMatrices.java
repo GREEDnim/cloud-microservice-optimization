@@ -4,14 +4,15 @@ import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.lists.VmList;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
 public class GenerateMatrices {
     private static double[][] commMatrix, execMatrix;//传输转移消耗矩阵，执行时间矩阵
-    private File commFile = new File("CommunicationTimeMatrix.txt");
-    private File execFile = new File("ExecutionTimeMatrix.txt");
-    private String filePath = "D:\\github\\cloudsim-package\\modules\\cloudsim-examples\\src\\main\\java\\org\\cloudbus\\cloudsim\\examples\\cloudlets.txt";
+    private File commFile = new File("CommunicationTimeMatrix.txt");//传输消耗矩阵
+    private File execFile = new File("ExecutionTimeMatrix.txt"); //执行消耗矩阵
+    private String filePath = "cloudlets1.txt";
 
     public GenerateMatrices() {
         commMatrix = new double[Constants.NO_OF_TASKS][Constants.NO_OF_VMS];
@@ -49,13 +50,14 @@ public class GenerateMatrices {
         System.out.println("Initializing new Matrices...");
         BufferedWriter commBufferedWriter = new BufferedWriter(new FileWriter(commFile));
         BufferedWriter execBufferedWriter = new BufferedWriter(new FileWriter(execFile));
+        DecimalFormat df = new DecimalFormat("0");
 
         for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
             for (int j = 0; j < Constants.NO_OF_VMS; j++) {
-                commMatrix[i][j] = Math.random() * 600 + 20;
-                execMatrix[i][j] = Math.random() * 500 + 10;
-                commBufferedWriter.write(String.valueOf(commMatrix[i][j]) + ' ');
-                execBufferedWriter.write(String.valueOf(execMatrix[i][j]) + ' ');
+                commMatrix[i][j] = Math.random()*50 + 100;
+                execMatrix[i][j] = Math.random()*500 + 500;
+                commBufferedWriter.write(df.format(commMatrix[i][j]) + ' ');
+                execBufferedWriter.write(df.format(execMatrix[i][j]) + ' ');
             }
             commBufferedWriter.write('\n');
             execBufferedWriter.write('\n');
@@ -143,9 +145,11 @@ public class GenerateMatrices {
         Random rm = new Random();
         for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
             for (int j = 0; j < Constants.NO_OF_VMS; j++) {
+                // 通信消耗 = image size / bw = 10000/1000 = 10
                 commMatrix[i][j] = Calculator.div(VmList.getById(vmlist,j).getSize(),VmList.getById(vmlist, j).getBw());
+                // 执行消耗 = 随机任务长度 / mips = (1000-2000)/1000
                 execMatrix[i][j] = Calculator.div(LengthGroup[rm.nextInt(Constants.NO_OF_TASKS)],VmList.getById(vmlist, j).getMips());
-//                execMatrix[i][j] = Calculator.div(LengthGroup[i],VmList.getById(vmlist, j).getHost().getTotalAllocatedMipsForVm(VmList.getById(vmlist, j)));
+                 //execMatrix[i][j] = Calculator.div(LengthGroup[i],VmList.getById(vmlist, j).getHost().getTotalAllocatedMipsForVm(VmList.getById(vmlist, j)));
                 commBufferedWriter.write(String.valueOf(commMatrix[i][j]) + ' ');
                 execBufferedWriter.write(String.valueOf(execMatrix[i][j]) + ' ');
             }

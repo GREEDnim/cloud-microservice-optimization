@@ -1,4 +1,4 @@
-package SAWPSO;
+package MOPSO;
 
 
 import org.cloudbus.cloudsim.*;
@@ -7,20 +7,16 @@ import utils.Constants;
 import utils.DatacenterCreator;
 import utils.GenerateMatrices;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class SAWPSO_SchedulerTestOne {
+public class MOPSO_SchedulerTestOne {
 
     private static List<Cloudlet> cloudletList = new LinkedList<>();
     private static List<Vm> vmList;
     //private static Datacenter[] datacenter;
     private static Datacenter datacenter;
-    private static SAWPSO SAWPSOSchedularInstance;
+    private static MOPSO SAWPSOSchedularInstance;
     private static double mapping[];
     private static double[][] commMatrix;
     private static double[][] execMatrix;
@@ -61,7 +57,7 @@ public class SAWPSO_SchedulerTestOne {
 
         for (int i = 0; i < cloudlets; i++) {
             int dcId = (int) (mapping[i]);
-//            long length = (long) (1e3 * (commMatrix[i][dcId] + execMatrix[i][dcId]));
+            //long length = (long) (1e3 * (commMatrix[i][dcId] + execMatrix[i][dcId]));
             long length = (long)(execMatrix[i][dcId]*1e3);
             cloudlet[i] = new Cloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
             cloudlet[i].setUserId(userId);
@@ -86,7 +82,7 @@ public class SAWPSO_SchedulerTestOne {
             datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
 
             //Third step: Create Broker
-            SAWPSODatacenterBroker broker = createBroker("Broker_0");
+            MOPSODatacenterBroker broker = createBroker("Broker_0");
             int brokerId = broker.getId();
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
@@ -96,7 +92,7 @@ public class SAWPSO_SchedulerTestOne {
             GenerateMatrices GM = new GenerateMatrices(vmList);
             commMatrix = GM.getcommMatrix();
             execMatrix = GM.getexecMatrix();
-            SAWPSOSchedularInstance = new SAWPSO();
+            SAWPSOSchedularInstance = new MOPSO();
             mapping = SAWPSOSchedularInstance.run();
             cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
 
@@ -129,15 +125,15 @@ public class SAWPSO_SchedulerTestOne {
 
 //            printCloudletList(newList);
             PrintResults(newList);
-            Log.printLine(SAWPSO_Scheduler.class.getName() + " finished!");
+            Log.printLine(MOPSO_Scheduler.class.getName() + " finished!");
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("The simulation has been terminated due to an unexpected error");
         }
     }
 
-    private static SAWPSODatacenterBroker createBroker(String name) throws Exception {
-        return new SAWPSODatacenterBroker(name);
+    private static MOPSODatacenterBroker createBroker(String name) throws Exception {
+        return new MOPSODatacenterBroker(name);
     }
 
     private static double PrintResults(List<Cloudlet> list)
