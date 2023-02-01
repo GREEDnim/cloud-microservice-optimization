@@ -37,12 +37,13 @@ public class MOPSO {
             swarm.setInertia(w);//设置惯性权值
         }
         double[] Position = swarm.getBestParticle().getBestPosition();
-        for (int i=0;i<Position.length;i++){
-            System.out.println("粒子"+ i +"Position："+ Position[i]);
-        }
+        //for (int i=0;i<Position.length;i++){
+            //System.out.println("粒子"+ i +"Position："+ Position[i]);
+        //}
         System.out.println("calcCostPerTime"+ff.calcCostPerTime(swarm.getBestParticle().getBestPosition()));
         System.out.println("\nThe best fitness value: " + swarm.getBestFitness() + "\nBest makespan: " + ff.calcMakespan(swarm.getBestParticle().getBestPosition()));
         System.out.println("The best calcTotalTime:"+ff.calcTotalTime(swarm.getBestParticle().getPosition()));
+        System.out.println("calcLoadCost"+ff.calcLoadCost(swarm.getBestParticle().getBestPosition()));
         System.out.println("The best solution is: ");
         SchedulerParticle bestParticle = (SchedulerParticle) swarm.getBestParticle();
         System.out.println(bestParticle.toString());

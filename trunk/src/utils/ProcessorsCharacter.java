@@ -23,11 +23,11 @@ public class ProcessorsCharacter {
 	 * 类型1-管理：带宽>内存>存储>计算
 	 */
 	public class Type_manage{
-		public static final int mips = 177730;
+		public static final int mips = 108890;
 		public static final int cores = 6;
-		public static final long storage = 1000000L;
-		public static final int bw = 200000;
-		public static final int ram = 20000;
+		public static final long storage = 1500000L;//2
+		public static final int bw = 200000;//1
+		public static final int ram = 30000;//2
 		public static final double time_zone = 10.0;
 		public static final double cost = 3.0;
 		public static final double costPerMem = 0.05;
@@ -38,11 +38,11 @@ public class ProcessorsCharacter {
 	 * 类型2-设计:计算>内存>带宽>存储
 	 */
 	public class Type_design{
-		public static final int mips = 177730;
-		public static final int cores = 8;
+		public static final int mips = 177730;//1
+		public static final int cores = 8;//1
 		public static final long storage = 1000000L;
 		public static final int bw = 150000;
-		public static final int ram = 30000;
+		public static final int ram = 30000;//2
 		public static final double time_zone = 10.0;
 		public static final double cost = 3.5;
 		public static final double costPerMem = 0.05;
@@ -53,10 +53,10 @@ public class ProcessorsCharacter {
 	 * 类型3-施工：存储>计算>内存>带宽
 	 */
 	public class Type_build {
-		public static final int mips = 108890;
+		public static final int mips = 128300;
 		public static final int cores = 6;
-		public static final long storage = 1000000L;
-		public static final int bw = 100000;
+		public static final long storage = 2000000L;
+		public static final int bw = 150000;
 		public static final int ram = 10000;
 		public static final double time_zone = 10.0;
 		public static final double cost = 4.0;

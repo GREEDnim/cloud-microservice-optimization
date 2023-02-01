@@ -19,6 +19,7 @@ public class SchedulerParticleUpdate extends ParticleUpdate {
         double[] pbest = particle.getBestPosition();
         double[] gbest = swarm.getBestPosition();
         W = swarm.getInertia();
+        //更新速度和位置
         for (int i = 0; i < Constants.NO_OF_TASKS; ++i) {
             v[i] = W * v[i] + C * Math.random() * (pbest[i] - x[i]) + C * Math.random() * (gbest[i] - x[i]);
             x[i] = (int) (x[i] + v[i]);

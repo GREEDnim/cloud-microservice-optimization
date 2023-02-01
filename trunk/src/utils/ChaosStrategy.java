@@ -90,4 +90,14 @@ public class ChaosStrategy
         setChaosValue(result);
         return result;
     }
+    public double PTent(double x0)
+    {
+        double result = x0;//迭代的初始值
+        if(result>=0.0&&result<=0.5)
+            result = 2*result;
+        if(result>=0.5&&result<=1.0)
+            result = 2*(1-result);
+        setChaosValue(result);
+        return result;
+    }
 }

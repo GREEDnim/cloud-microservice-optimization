@@ -12,7 +12,7 @@ public class GenerateMatrices {
     private static double[][] commMatrix, execMatrix;//传输转移消耗矩阵，执行时间矩阵
     private File commFile = new File("CommunicationTimeMatrix.txt");//传输消耗矩阵
     private File execFile = new File("ExecutionTimeMatrix.txt"); //执行消耗矩阵
-    private String filePath = "cloudlets1.txt";
+    private String filePath = "cloudlets500-1000_2000.txt";
 
     public GenerateMatrices() {
         commMatrix = new double[Constants.NO_OF_TASKS][Constants.NO_OF_VMS];
@@ -52,10 +52,11 @@ public class GenerateMatrices {
         BufferedWriter execBufferedWriter = new BufferedWriter(new FileWriter(execFile));
         DecimalFormat df = new DecimalFormat("0");
 
+        //生成传输矩阵和执行矩阵，
         for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
             for (int j = 0; j < Constants.NO_OF_VMS; j++) {
-                commMatrix[i][j] = Math.random()*50 + 100;
-                execMatrix[i][j] = Math.random()*500 + 500;
+                commMatrix[i][j] = Math.random()*10 + 10;
+                execMatrix[i][j] = Math.random()*100 + 500;
                 commBufferedWriter.write(df.format(commMatrix[i][j]) + ' ');
                 execBufferedWriter.write(df.format(execMatrix[i][j]) + ' ');
             }
@@ -139,7 +140,7 @@ public class GenerateMatrices {
 
     private void initMatrix(double[] LengthGroup) throws IOException
     {
-        System.out.println("Initializing new Matrices...");
+        System.out.println("Initializing new Matrices...by sampel");
         BufferedWriter commBufferedWriter = new BufferedWriter(new FileWriter(commFile));
         BufferedWriter execBufferedWriter = new BufferedWriter(new FileWriter(execFile));
         Random rm = new Random();
@@ -147,11 +148,11 @@ public class GenerateMatrices {
             for (int j = 0; j < Constants.NO_OF_VMS; j++) {
                 // 通信消耗 = image size / bw = 10000/1000 = 10
                 commMatrix[i][j] = Calculator.div(VmList.getById(vmlist,j).getSize(),VmList.getById(vmlist, j).getBw());
-                // 执行消耗 = 随机任务长度 / mips = (1000-2000)/1000
+                // 执行消耗 = 随机任务长度 / mips = (1000~2000)/1000
                 execMatrix[i][j] = Calculator.div(LengthGroup[rm.nextInt(Constants.NO_OF_TASKS)],VmList.getById(vmlist, j).getMips());
                  //execMatrix[i][j] = Calculator.div(LengthGroup[i],VmList.getById(vmlist, j).getHost().getTotalAllocatedMipsForVm(VmList.getById(vmlist, j)));
                 commBufferedWriter.write(String.valueOf(commMatrix[i][j]) + ' ');
-                execBufferedWriter.write(String.valueOf(execMatrix[i][j]) + ' ');
+                execBufferedWriter.write(String.format("%.2f",execMatrix[i][j]) + ' ');
             }
             commBufferedWriter.write('\n');
             execBufferedWriter.write('\n');

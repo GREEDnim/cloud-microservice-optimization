@@ -23,7 +23,7 @@ public class SchedulerFitnessFunction extends FitnessFunction {
      */
     @Override
     public double evaluate(double[] position) {
-        double alpha = 0.3;
+        double alpha = 0.2;
         return alpha * calcTotalTime(position) + (1 - alpha) * calcMakespan(position) ;
         //return calcMakespan(position);
         //return calcTotalTime(position);
@@ -104,9 +104,19 @@ public class SchedulerFitnessFunction extends FitnessFunction {
         for(int i =0;i<Constants.NO_OF_TASKS;i++)
         {
             int dcId = (int) position[i];
-            Consumption = execMatrix[i][dcId];
+            Consumption += execMatrix[i][dcId];
 
         }
         return Consumption;
+    }
+    public  double calcLoadCost(double[] position) {
+        double utilization = 0.0;
+        for(int i =0;i<Constants.NO_OF_TASKS;i++)
+        {
+            int dcId = (int) position[i];
+            utilization += execMatrix[i][dcId];
+
+        }
+        return utilization;
     }
 }

@@ -79,8 +79,7 @@ public class DatacenterCreator {
     }
 
 
-    public static Datacenter createDatacenter(String name,int PeNum)
-    {
+    public static Datacenter createDatacenter(String name,int PeNum) {
         List<Host> hostList = new ArrayList<Host>();
         List<Pe> peList = new ArrayList<Pe>();
         int mips = 2000;
@@ -134,8 +133,7 @@ public class DatacenterCreator {
         return datacenter;
     }
 
-    public static Datacenter createDatacenter(String name,int hostNum,int centerType)
-    {
+    public static Datacenter createDatacenter(String name,int hostNum,int centerType) {
         List<Host> hostList = new ArrayList<Host>();
         List<Pe> peList = new ArrayList<Pe>();
         //定义初始值
