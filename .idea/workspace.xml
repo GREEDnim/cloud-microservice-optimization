@@ -4,35 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc79a43e-7415-4917-8d48-e3118e563088" name="Default Changelist" comment="删除一些多余的注释&#10;修改SAWPSO中的两行代码逻辑">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/jars.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/jars.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExecutionTimeMatrix500-1000_500.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ExecutionTimeMatrix500-1000_500.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExecutionTimeMatrix500-1000_800..txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudlets.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudlets500-1000_1000.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cloudlets500-1000_1000.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloudlets500-1000_800.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cloudlets500-1000_800.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/ACO/ACODatacenterBroker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/ACO/ACODatacenterBroker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/ACO/ACO_Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/ACO/ACO_Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/FCFS/FCFSDatacenterBroker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/FCFS/FCFSDatacenterBroker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/FCFS/FCFS_Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/FCFS/FCFS_Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/PSO/PSO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/PSO/PSO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/PSO/PSO_Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/PSO/PSO_Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerFitnessFunction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerFitnessFunction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerParticle.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerParticle.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerParticleUpdate.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/PSO/SchedulerParticleUpdate.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/RoundRobin/RoundRobinScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/RoundRobin/RoundRobinScheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SAWPSO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SAWPSODatacenterBroker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SAWPSO_Scheduler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SchedulerFitnessFunction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SchedulerParticle.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SAWPSO/SchedulerParticleUpdate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/SJF/SJF_Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/SJF/SJF_Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/utils/Constants.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/utils/Constants.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/utils/DatacenterCreator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/utils/DatacenterCreator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/trunk/utils/GenerateMatrices.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/trunk/utils/GenerateMatrices.class" afterDir="false" />
-    </list>
+    <list default="true" id="cc79a43e-7415-4917-8d48-e3118e563088" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -448,6 +420,7 @@
       <workItem from="1670304201571" duration="12713000" />
       <workItem from="1671774042276" duration="190086000" />
       <workItem from="1675227733365" duration="30886000" />
+      <workItem from="1675259722996" duration="366000" />
     </task>
     <task id="LOCAL-00001" summary="混沌变异策略加入">
       <created>1555350307032</created>
@@ -505,7 +478,14 @@
       <option name="project" value="LOCAL" />
       <updated>1556649116958</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="统一数据中心虚拟机云任务标准&#10;完成cloudletlength为500，1000的实验">
+      <created>1675259998296</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1675259998296</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -609,7 +589,8 @@
     <MESSAGE value="particle类增加一个启动变异策略的方法，按需要时重写" />
     <MESSAGE value="增加一种模拟退火粒子群算法实现" />
     <MESSAGE value="删除一些多余的注释&#10;修改SAWPSO中的两行代码逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="删除一些多余的注释&#10;修改SAWPSO中的两行代码逻辑" />
+    <MESSAGE value="统一数据中心虚拟机云任务标准&#10;完成cloudletlength为500，1000的实验" />
+    <option name="LAST_COMMIT_MESSAGE" value="统一数据中心虚拟机云任务标准&#10;完成cloudletlength为500，1000的实验" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
