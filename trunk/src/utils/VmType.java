@@ -6,45 +6,61 @@ package utils;
  * @author User
  */
 public class VmType {
+    /**
+     * 类型1：高性能
+     */
     public class Type1{
-        public static final int ram = 1000; // 1GB
+        public static final int ram = 2048; // 2GB
         public static final int disk = 4000; // 4GB
-        public static final int mips = 1000;
-        public static final int cost = 5000; // per hour
+        public static final int mips = 2048;
+        public static final int cost = 1000; // per hour
         public static final int size = 10000;
-        public static final int pesNumber = 1;
-        public static final int bw = 1000;
+        public static final int pesNumber = 2;
+        public static final int bw = 2000;
     }
+
+    /**
+     * 类型2：普通性能
+     */
     public class Type2{
-        public static final int ram = 750; // 1GB
+        public static final int ram = 1024; // 1GB
         public static final int disk = 3000; // 3GB
-        public static final int mips = 500;
-        public static final int cost = 2000;// per hour
+        public static final int mips = 1024;
+        public static final int cost = 1000;// per hour
         public static final int size = 10000;
         public static final int pesNumber = 1;
-        public static final int bw = 1000;
+        public static final int bw = 1500;
     }
+    /**
+     * 类型3：低性能
+     */
     public class Type3{
         public static final int ram = 500; // 1GB
         public static final int disk = 1500; // 4GB
-        public static final int mips = 300;
+        public static final int mips = 512;
         public static final int cost = 1000; // per hour
         public static final int size = 10000;
         public static final int pesNumber = 1;
         public static final int bw = 1000;
     }
+    /**
+     * 类型4：高计算能力
+     */
     public class Type4{
         public static final int ram = 250; // 1GB
         public static final int disk = 700; // 4GB
-        public static final int mips = 200; //
+        public static final int mips = 1024; //
         public static final int cost = 250; // per hour
         public static final int size = 10000;
         public static final int pesNumber = 1;
         public static final int bw = 1000;
     }
+    /**
+     * 类型5：高内存
+     */
     public class Type5{
         public static final int ram = 100; // 1GB
-        public static final int disk = 500; // 4GB
+        public static final int disk = 5000; // 4GB
         public static final int mips = 200;
         public static final int cost = 100;// per hour
         public static final int size = 10000;

@@ -6,8 +6,10 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
+import utils.Constants;
 
 import java.util.List;
+
 
 public class MOPSODatacenterBroker extends DatacenterBroker {
 
@@ -26,21 +28,49 @@ public class MOPSODatacenterBroker extends DatacenterBroker {
     }
 
     /**
-     * 分配任务到虚拟机
+     * 分配任务到虚拟机---修改
      * @param cloudlist
      * @return
      */
     private List<Cloudlet> assignCloudletsToVms(List<Cloudlet> cloudlist) {
 
+        //计算当前的负载情况
+/*        double[] vmcostLength = new double[Constants.NO_OF_VMS];
+        double[] position = MOPSO.Position;
+        double[][] commMatrix = MOPSO_Scheduler.commMatrix;
+        double[][] execMatrix = MOPSO_Scheduler.execMatrix;
+        for (int i = 0; i < Constants.NO_OF_VMS; i++) {
+            double totalcloudletLength = 0.0;
+            for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
+                if (i == (int) position[j]) {
+                    long length1 = (long)(10*(commMatrix[j][i])+ 1e3*(execMatrix[j][i]));
+                    totalcloudletLength += length1;
+                }
+            }
+            vmcostLength[i] = totalcloudletLength;
+        }
+
+        int id = 0;
+        double currentMin = vmcostLength[0];
+        for (int i = 1; i < Constants.NO_OF_VMS; i++){
+            if(currentMin >= vmcostLength[i]){
+                currentMin = vmcostLength[i];
+                id = i;
+            }
+        }*/
+
         int idx = 0;
         for (Cloudlet cl : cloudlist) {
-            cl.setVmId((int) mapping[idx++]);
+            cl.setVmId((int)mapping[idx++]);
         }
         return cloudlist;
     }
 
+    /**
+     * 提交云任务---分配任务到虚拟机
+     */
     @Override
-    protected void submitCloudlets() {
+    public void submitCloudlets() {
         Log.print("任务数量检查"+cloudletList.size() + mapping.length);
         List<Cloudlet> tasks = assignCloudletsToVms(getCloudletList());
         int vmIndex = 0;
@@ -66,6 +96,10 @@ public class MOPSODatacenterBroker extends DatacenterBroker {
             vmIndex = (vmIndex + 1) % getVmsCreatedList().size();
             getCloudletSubmittedList().add(cloudlet);
         }
+    }
+    @Override
+    public void submitVmList(List<? extends Vm> list) {
+        this.getVmList().addAll(list);
     }
 
     @Override

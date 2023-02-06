@@ -1,9 +1,12 @@
 package MOPSO;
 
 import net.sourceforge.jswarm_pso.Particle;
+import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Log;
 import utils.ChaosStrategy;
 import utils.Constants;
 
+import java.util.List;
 import java.util.Random;
 
 public class SchedulerParticle extends Particle {
@@ -11,6 +14,9 @@ public class SchedulerParticle extends Particle {
 
     /** 粒子活跃判断计数*/
     int count;
+
+
+
 
 
     public SchedulerParticle() {
@@ -39,19 +45,30 @@ public class SchedulerParticle extends Particle {
 
     @Override
     public String toString() {
+        //double mapping[] = MOPSO_Scheduler.mapping;
+        double[][] commMatrix = MOPSO_Scheduler.commMatrix;
+        double[][] execMatrix = MOPSO_Scheduler.execMatrix;
         String output = "";
         for (int i = 0; i < Constants.NO_OF_VMS; i++) {
             String tasks = "";
+            double totalcloudletLength = 0.0;
             int no_of_tasks = 0;
             for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
                 if (i == (int) getPosition()[j]) {
+                    long length1 = (long)(10*(commMatrix[j][i])+ 1e3*(execMatrix[j][i]));
+                    totalcloudletLength += length1;
                     tasks += (tasks.isEmpty() ? "" : " ") + j;
                     ++no_of_tasks;
                 }
             }
-            if (tasks.isEmpty()) output += "There is no tasks associated to VM " + i + "\n";
-            else
-                output += "There are " + no_of_tasks + " tasks associated to VM " + i + " and they are " + tasks + "\n";
+
+            if (tasks.isEmpty()) {output += "There is no tasks associated to VM " + i + "\n";}
+            else {
+                output += "There are " + no_of_tasks + " tasks associated to VM " + i + " totalcloudletLength " + totalcloudletLength + " and they are " + tasks + "\n";
+            }
+            if(i == (int)(Constants.NO_OF_VMS*0.4) || i ==(int)(Constants.NO_OF_VMS*0.8)){
+                output += "\n"+ "================ 分割线 =================="+"\n";
+            }
         }
         return output;
     }
@@ -64,10 +81,13 @@ public class SchedulerParticle extends Particle {
     {
         //变异策略部分。
         double temp = this.getFitness()-this.getBestFitness();
-        if(Math.abs(temp)<0.005)
+        double[] Position = getBestPosition();
+        double[] Velocity = MOPSO.Velocity;
+
+        if(Math.abs(temp)<0.0005)
         {
             count++;
-            if(count>=10)//粒子连续5次判断都不活跃 进入变异环节
+            if(count>=15)//粒子连续10次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略
@@ -82,6 +102,8 @@ public class SchedulerParticle extends Particle {
                     //new_pos[i] = instance.PLM(1,instance.getChaosValue())*Constants.NO_OF_VMS;
                     new_pos[i] = instance.PTent(instance.getChaosValue())*Constants.NO_OF_VMS;
                     new_vel[i] = instance.LM(1,instance.getChaosValue());
+                    //new_pos[i] = Position[i];
+                    //new_vel[i] = Velocity[i];
                 }
                 setPosition(new_pos);
                 setVelocity(new_vel);
@@ -96,24 +118,25 @@ public class SchedulerParticle extends Particle {
     {
         //变异策略部分。
         double temp = this.getFitness()-this.getBestFitness();
+        //for (int i=0;i<Position.length;i++){
+        //System.out.println("粒子"+ i +"Position："+ Position[i]);
+        //}
         if(Math.abs(temp)<0.005)
         {
             count++;
-            if(count>=5)//粒子连续5次判断都不活跃 进入变异环节
+            if(count>=10)//粒子连续5次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略
                 System.out.println("go particle mutation!-粒子超出边界-启动变异策略");
-                ChaosStrategy instance = ChaosStrategy.getInstance();
-                instance.CalChaos();
 
                 double[] new_vel = new double[Constants.NO_OF_TASKS];
                 double[] new_pos = new double[Constants.NO_OF_TASKS];
                 for (int i = 0; i < Constants.NO_OF_TASKS; i++) {
                     //混沌映射方式生成变异粒子的速度和位置
                     //new_pos[i] = instance.PLM(1,instance.getChaosValue())*Constants.NO_OF_VMS;
-                    new_pos[i] = instance.PTent(instance.getChaosValue())*Constants.NO_OF_VMS;
-                    new_vel[i] = instance.LM(1,instance.getChaosValue());
+                    //new_pos[i] = Position[i];
+                    //new_vel[i] = Velocity[i];
                 }
                 setPosition(new_pos);
                 setVelocity(new_vel);

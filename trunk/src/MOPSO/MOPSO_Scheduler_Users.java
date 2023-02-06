@@ -16,48 +16,68 @@ import java.util.*;
 
 public class MOPSO_Scheduler_Users {
 
-
-    private static List<Cloudlet> cloudletList1 = new LinkedList<>();
-    private static List<Cloudlet> cloudletList2 = new LinkedList<>();
     private static List<Cloudlet> cloudletList = new LinkedList<>();
 
     private static List<Vm> vmList;
-    private static List<Vm> vmList1;
-    private static List<Vm> vmList2;
 
-    private static Datacenter[] datacenter;
-    //private static Datacenter datacenter;
-    private static MOPSO SAWPSOSchedularInstance1;
-    private static MOPSO SAWPSOSchedularInstance2;
+
+    //private static Datacenter[] datacenter;
+    private static Datacenter datacenter;
+    private static MOPSO SAWPSOSchedularInstance;
 
     private static double mapping[];
-    private static double mapping1[];
-    private static double mapping2[];
 
-    private static double[][] commMatrix;
-    private static double[][] execMatrix;
+    public static double[][] commMatrix;
+    public static double[][] execMatrix;
 
 
 
-    private static List<Vm> createVM(int userId, int vms,long size,int ram,int mips,long bw,int pesNumber,String vmm ) {
+    private static List<Vm> createVM(int userId, int vms ) {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
 
-        //VM Parameters
-/*        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
-        int mips = 1000;
-        long bw = 1000;// VM带宽（mbps）
-        int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name*/
+        //VM Parameters1  适用于计算密集-计算大 （0.4个）
+        long size1 = 2000; //image size (MB)
+        int ram1 = 1024; //vm memory (MB)
+        int mips1 = 1000;
+        long bw1 = 800;// VM带宽（mbps）
+        int pesNumber1 = 2; //number of cpus
+        String vmm1 = "Xen"; //VMM name
+
+        //VM Parameters2  适用于数据密集-内存大（0.4个）
+        long size2 = 2000; //image size (MB)
+        int ram2 = 2048; //vm memory (MB)
+        int mips2 = 800;
+        long bw2 = 800;// VM带宽（mbps）
+        int pesNumber2 = 1; //number of cpus
+        String vmm2 = "Xen"; //VMM name
+
+        //VM Parameters1  跨数据中心--带宽大 (0.2个)
+        long size3 = 1500; //image size (MB)
+        int ram3 = 1024; //vm memory (MB)
+        int mips3 = 1200;
+        long bw3 = 1500;// VM带宽（mbps）
+        int pesNumber3 = 1; //number of cpus
+        String vmm3 = "Xen"; //VMM name
+
 
         //create VMs
         Vm[] vm = new Vm[vms];
-        for (int i = 0; i < vms; i++) {
-            vm[i] = new Vm(i, userId, mips, pesNumber, ram, bw, size, vmm, new CloudletSchedulerSpaceShared());
+        //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
+        for (int i = 0; i < vms*0.4; i++) {
+
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new  CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
+        for (int i = (int)(vms*0.4); i < (int)(vms*0.8); i++) {
 
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new  CloudletSchedulerSpaceShared());
+            list.add(vm[i]);
+        }
+        for (int i = (int)(vms*0.8); i < vms; i++) {
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            list.add(vm[i]);
+        }
         return list;
     }
 
@@ -72,8 +92,8 @@ public class MOPSO_Scheduler_Users {
 
             //cloudlet properties.
             int pesNumber = 1;
-            long fileSize = 1000;
-            long outputSize = 1000;
+            long fileSize = 500;
+            long outputSize = 500;
             UtilizationModel utilizationModel = new UtilizationModelFull();
 
             while ((data = br.readLine()) != null)
@@ -101,44 +121,67 @@ public class MOPSO_Scheduler_Users {
         }
     }
 
-    private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift, double[] mapping,long fileSize,long outputSize,int pesNumber) {
-        LinkedList<Cloudlet> list = new LinkedList<Cloudlet>();
-
+    private static List<Cloudlet> createCloudlet(int userId, int cloudlets, int idShift) {
+        LinkedList<Cloudlet> letList = new LinkedList<Cloudlet>();
         //cloudlet parameters
-/*        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;*/
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-
+        //UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet[] cloudlet = new Cloudlet[cloudlets];
 
-        for (int i = 0; i < cloudlets; i++) {
+        //cloudlet1 parameters ：数据密集任务参数
+        long fileSize1 = 500;
+        long outputSize1 = 500;
+        int pesNumber1 = 1;
+
+        //cloudlet2 parameters ：计算密集性任务参数
+        long fileSize2 = 200;
+        long outputSize2 = 200;
+        int pesNumber2 = 2;
+
+        //cloudlet3 parameters ：跨数据中心任务参数
+        long fileSize3 = 300;
+        long outputSize3 = 300;
+        int pesNumber3 = 1;
+        int magnification = 2;
+
+        //UtilizationModel utilizationModel = new UtilizationModelFull();
+        //UtilizationModelPlanetLabInMemory PlanetLabInMemory = new UtilizationModelPlanetLabInMemory(filePath,0.01,4);
+        UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
+
+        //在这里创建多种任务-数据密集任务
+        for (int i = 0; i < cloudlets*0.6 ; i++) {
             int dcId = (int) (mapping[i]);
-            long length = (long) ((commMatrix[i][dcId] + execMatrix[i][dcId]));
+            long length1 = (long)((commMatrix[i][dcId])+ 1e3*(execMatrix[i][dcId]));
             //long length = (long) (1e3*execMatrix[i][dcId]);
-            cloudlet[i] = new Cloudlet(idShift + i, length, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+            cloudlet[i] = new Cloudlet(idShift + i, length1, pesNumber1, fileSize1, outputSize1, utilizationModel, utilizationModel, utilizationModel);
             cloudlet[i].setUserId(userId);
-            list.add(cloudlet[i]);
+            letList.add(cloudlet[i]);
+        }
+        for (int i = (int)((int)cloudlets*0.6); i < cloudlets*0.9; i++) {
+            int dcId = (int) (mapping[i]);
+            long length2 = (long)((commMatrix[i][dcId])+ 1e3*(execMatrix[i][dcId]));
+            //long length = (long) (1e3*execMatrix[i][dcId]);
+            cloudlet[i] = new Cloudlet(idShift + i, length2, pesNumber2, fileSize2, outputSize2, utilizationModel, utilizationModel, utilizationModel);
+            cloudlet[i].setUserId(userId);
+            letList.add(cloudlet[i]);
+        }
+        for (int i = (int)((int)cloudlets*0.9); i < cloudlets; i++) {
+            int dcId = (int) (mapping[i]);
+            long length3 = (long)((commMatrix[i][dcId])*magnification + 1e3*(execMatrix[i][dcId]));
+            //long length = (long) (1e3*execMatrix[i][dcId]);
+            cloudlet[i] = new Cloudlet(idShift + i, length3, pesNumber3, fileSize3, outputSize3, utilizationModel, utilizationModel, utilizationModel);
+            cloudlet[i].setUserId(userId);
+            letList.add(cloudlet[i]);
         }
 
-        return list;
+        return letList;
     }
 
     public static void main(String[] args) {
         Log.printLine("Starting PSO Scheduler...");
 
-        new GenerateMatrices();
-        commMatrix = GenerateMatrices.getCommMatrix();
-        execMatrix = GenerateMatrices.getExecMatrix();
-        SAWPSOSchedularInstance1 = new MOPSO();
-        SAWPSOSchedularInstance2 = new MOPSO();
-        mapping1 = SAWPSOSchedularInstance1.run();
-        mapping2 = SAWPSOSchedularInstance2.run();
-
-
 
         try {
-            String filePath = "cloudlets1.txt";
+            String filePath = "cloudlets500-9000_100.txt";
             int num_user = 2;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = true;  // mean trace events-false
@@ -151,16 +194,12 @@ public class MOPSO_Scheduler_Users {
 /*            for (int i = 0; i < Constants.NO_OF_DATA_CENTERS; i++) {
                 datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i);
             }*/
-            //datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
+            datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
             //数据中心1：
-            datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
+            //datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
 
-            MOPSODatacenterBroker broker1 = createBroker("Broker_0");
-            int brokerId1 = broker1.getId();
-            MOPSODatacenterBroker broker2 = createBroker("Broker_1");
-            int brokerId2 = broker2.getId();
-
-
+            MOPSODatacenterBroker broker = createBroker("Broker_0");
+            int brokerId = broker.getId();
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
             /*long size = 10000; //image size (MB)
@@ -169,82 +208,65 @@ public class MOPSO_Scheduler_Users {
             long bw = 1000;// VM带宽（mbps）
             int pesNumber = 1; //number of cpus
             String vmm = "Xen"; //VMM name*/
-            vmList1 = createVM(brokerId1, Constants.NO_OF_VMS,10000,512,1000,1000,1,"Xen");
-            vmList2 = createVM(brokerId2, Constants.NO_OF_VMS,10000,512,1000,1000,1,"Xen");
-            vmList = vmList1;
-            vmList.addAll(vmList2);
+            //vmList1 = createVM(brokerId1, Constants.NO_OF_VMS,10000,512,1000,1000,1,"Xen");
+            vmList = createVM(brokerId, Constants.NO_OF_VMS);
+            //vmList = vmList1;
+            //vmList.addAll(vmList2);
 
-
-
-
+            new GenerateMatrices(vmList);
+            commMatrix = GenerateMatrices.getCommMatrix();
+            execMatrix = GenerateMatrices.getExecMatrix();
+            SAWPSOSchedularInstance = new MOPSO();
+            mapping = SAWPSOSchedularInstance.run();
 
             //cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
-            //createTasks(brokerId1,filePath,Constants.NO_OF_TASKS);
-            cloudletList1 = createCloudlet(brokerId1, Constants.NO_OF_TASKS, 0,mapping1,300,300,1);
-            cloudletList2 = createCloudlet(brokerId2, Constants.NO_OF_TASKS, 0,mapping2,300,300,1);
-            cloudletList = cloudletList1;
-            cloudletList.addAll(cloudletList2);
-
-
-
-
-
+            //createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
+            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
+            //cloudletList2 = createCloudlet(brokerId2, Constants.NO_OF_TASKS, 0,mapping2,300,300,1);
+            //cloudletList = cloudletList1;
+            //cloudletList.addAll(cloudletList2);
 
             // mapping our dcIds to cloudsim dcIds
             // 将数据中心id映射到cloudSim
             //HashSet<Integer> dcIds = new HashSet<>();
             //HashMap<Integer, Integer> hm = new HashMap<>();
-            HashSet<Integer> dcIds1 = new HashSet<>();
-            HashSet<Integer> dcIds2 = new HashSet<>();
-            HashMap<Integer, Integer> hm1 = new HashMap<>();
-            HashMap<Integer, Integer> hm2 = new HashMap<>();
+            HashSet<Integer> dcIds = new HashSet<>();
+            //HashSet<Integer> dcIds2 = new HashSet<>();
+            HashMap<Integer, Integer> hm = new HashMap<>();
+            //HashMap<Integer, Integer> hm2 = new HashMap<>();
 /*            for (Vm dc : vmList) {
                 if (!dcIds.contains(dc.getId()))
                     dcIds.add(dc.getId());
             }*/
-            for (Vm dc : vmList1) {
-                if (!dcIds1.contains(dc.getId()))
-                    dcIds1.add(dc.getId());
+            for (Vm dc : vmList) {
+                if (!dcIds.contains(dc.getId()))
+                    dcIds.add(dc.getId());
             }
-            for (Vm dc : vmList2) {
-                if (!dcIds2.contains(dc.getId()))
-                    dcIds2.add(dc.getId());
+            Iterator<Integer> it1 = dcIds.iterator();
+            for (int i = 0; i < mapping.length; i++) {
+                if (hm.containsKey((int) mapping[i])) continue;
+                hm.put((int) mapping[i], it1.next());
             }
-            Iterator<Integer> it1 = dcIds1.iterator();
-            Iterator<Integer> it2 = dcIds2.iterator();
-            for (int i = 0; i < mapping1.length; i++) {
-                if (hm1.containsKey((int) mapping1[i])) continue;
-                hm1.put((int) mapping1[i], it1.next());
-            }
-            for (int i = 0; i < mapping2.length; i++) {
-                if (hm2.containsKey((int) mapping2[i])) continue;
-                hm2.put((int) mapping2[i], it2.next());
-            }
-            for (int i = 0; i < mapping1.length; i++)
-                mapping1[i] = hm1.containsKey((int) mapping1[i]) ? hm1.get((int) mapping1[i]) : mapping1[i];
-            for (int i = 0; i < mapping2.length; i++)
-                mapping2[i] = hm2.containsKey((int) mapping2[i]) ? hm2.get((int) mapping2[i]) : mapping2[i];
+            for (int i = 0; i < mapping.length; i++)
+                mapping[i] = hm.containsKey((int) mapping[i]) ? hm.get((int) mapping[i]) : mapping[i];
 
-            broker1.submitVmList(vmList1);
-            broker1.setMapping(mapping1);
-            broker1.submitCloudletList(cloudletList1);
 
-            broker2.submitVmList(vmList2);
-            broker2.setMapping(mapping2);
-            broker2.submitCloudletList(cloudletList2);
+            broker.submitVmList(vmList);
+            broker.setMapping(mapping);
+            broker.submitCloudletList(cloudletList);
+
 
 
             // Fifth step: Starts the simulation
             CloudSim.startSimulation();
 
-            List<Cloudlet> newList1 = broker1.getCloudletReceivedList();
-            List<Cloudlet> newList2 = broker2.getCloudletReceivedList();
+            List<Cloudlet> newList = broker.getCloudletReceivedList();
+
 
             CloudSim.stopSimulation();
 
             //printCloudletList(newList);
-            PrintResults(newList1);
-            PrintResults(newList2);
+            PrintResults(newList);
             Log.printLine(MOPSO_Scheduler_Users.class.getName() + " finished!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -292,8 +314,7 @@ public class MOPSO_Scheduler_Users {
             mxFinishTime = Math.max(mxFinishTime, cloudlet.getFinishTime());
         }
         Log.printLine(mxFinishTime);
-        SAWPSOSchedularInstance1.printBestFitness();
-        SAWPSOSchedularInstance2.printBestFitness();
+        SAWPSOSchedularInstance.printBestFitness();
     }
 
     private static double PrintResults(List<Cloudlet> list) {

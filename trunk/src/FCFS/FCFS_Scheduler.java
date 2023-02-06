@@ -46,7 +46,7 @@ public class FCFS_Scheduler {
         //VM Parameters1  跨数据中心--带宽大 (8个)
         long size3 = 10000; //image size (MB)
         int ram3 = 1024; //vm memory (MB)
-        int mips3 = 1000;
+        int mips3 = 1500;
         long bw3 = 2000;// VM带宽（mbps）
         int pesNumber3 = 1; //number of cpus
         String vmm3 = "Xen"; //VMM name
@@ -57,15 +57,16 @@ public class FCFS_Scheduler {
 
         for (int i = 0; i < vms*0.4; i++) {
             //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
-            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1,pesNumber1));
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerTimeShared());
             list.add(vm[i]);
         }
         for (int i = (int)(vms*0.4); i < (int)(vms*0.8); i++) {
+
             vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerTimeShared());
             list.add(vm[i]);
         }
         for (int i = (int)(vms*0.8); i < vms; i++) {
-            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerTimeShared());
             list.add(vm[i]);
         }
 
@@ -304,12 +305,12 @@ public class FCFS_Scheduler {
         Log.printLine("mxFinishTime"+ mxFinishTime);
         double makespan =0.0;
         double LoadCost =0.0;
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 5; i++){
             makespan += calcMakespan(list);
             LoadCost += calcLoadCost(list);
         }
-        Log.printLine("Makespan using FCFS: " + makespan/10);
-        Log.printLine("LoadCost using FCFS: " + LoadCost/10);
+        Log.printLine("Makespan using FCFS: " + makespan/5);
+        Log.printLine("LoadCost using FCFS: " + LoadCost/5);
         return mxFinishTime;
     }
     public static Vm getVmById(int vmId){

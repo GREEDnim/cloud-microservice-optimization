@@ -2,6 +2,7 @@ package utils;
 
 
 import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
@@ -15,6 +16,7 @@ import java.util.List;
 public class DatacenterCreator {
 
     /*ProcessorsCharacter Character = new ProcessorsCharacter();*/
+    public static List<Host> hostLists;
 
 
     public static Datacenter createDatacenter(String name) {
@@ -133,7 +135,7 @@ public class DatacenterCreator {
         return datacenter;
     }
 
-    public static Datacenter createDatacenter(String name,int hostNum,int centerType) {
+    public static Datacenter createDatacenter(String name,int  hostId, int centerType) {
         List<Host> hostList = new ArrayList<Host>();
         List<Pe> peList = new ArrayList<Pe>();
         //定义初始值
@@ -179,19 +181,18 @@ public class DatacenterCreator {
             peList.add(new Pe(1, new PeProvisionerSimple(mips)));
         }
 
-        for(int hostId = 0;hostId<hostNum;hostId++)
-        {
-            hostList.add(
-                    new Host(
-                            hostId,
-                            new RamProvisionerSimple(ram),
-                            new BwProvisionerSimple(bw),
-                            storage,
-                            peList,
-                            new VmSchedulerTimeShared(peList)
-                    )
-            );
-        }
+        hostList.add(
+                new Host(
+                        0,
+                        new RamProvisionerSimple(ram),
+                        new BwProvisionerSimple(bw),
+                        storage,
+                        peList,
+                        new VmSchedulerTimeShared(peList)
+                )
+        );
+
+
 
 
         LinkedList<Storage> storageList = new LinkedList<Storage>();    //we are not adding SAN devices by now
@@ -207,6 +208,8 @@ public class DatacenterCreator {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //hostLists.add(hostList.get(0));
         return datacenter;
     }
 }

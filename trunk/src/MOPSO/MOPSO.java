@@ -8,6 +8,8 @@ public class MOPSO {
     private static Swarm swarm;
     private static SchedulerParticle particles[];
     private static SchedulerFitnessFunction ff = new SchedulerFitnessFunction();
+    public static double[] Position;
+    public static double[] Velocity;
 
     public MOPSO() {
         initParticles();
@@ -20,7 +22,7 @@ public class MOPSO {
     public double[] run() {
         swarm = new Swarm(Constants.POPULATION_SIZE, new SchedulerParticle(), ff);
         double w_max = 0.9;//最大权重
-        double w_min = 0.5;//最小权重
+        double w_min = 0.4;//最小权重
         swarm.setInertia(0.9);
         swarm.setMinPosition(0);
         swarm.setMaxPosition(Constants.NO_OF_VMS - 1);
@@ -35,8 +37,10 @@ public class MOPSO {
             }
             w = CalSOW(w_max, w_min, i, w);
             swarm.setInertia(w);//设置惯性权值
+            Position= swarm.getBestParticle().getBestPosition();
+            Velocity = swarm.getBestParticle().getVelocity();
         }
-        double[] Position = swarm.getBestParticle().getBestPosition();
+
         //for (int i=0;i<Position.length;i++){
             //System.out.println("粒子"+ i +"Position："+ Position[i]);
         //}

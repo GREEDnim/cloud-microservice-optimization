@@ -31,7 +31,7 @@ public class PSO_Scheduler {
      * @param vms
      * @return
      */
-    private static List<Vm> createVM(int userId, int vms) {
+    private static List<Vm> createVM(int userId, int vms,Datacenter[] datacenters) {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
 
@@ -54,7 +54,7 @@ public class PSO_Scheduler {
         //VM Parameters1  跨数据中心--带宽大 (0.2个)
         long size3 = 10000; //image size (MB)
         int ram3 = 1024; //vm memory (MB)
-        int mips3 = 1000;
+        int mips3 = 1500;
         long bw3 = 2000;// VM带宽（mbps）
         int pesNumber3 = 1; //number of cpus
         String vmm3 = "Xen"; //VMM name
@@ -62,19 +62,38 @@ public class PSO_Scheduler {
 
         //create VMs
         Vm[] vm = new Vm[vms];
-
+        //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
         for (int i = 0; i < vms*0.4; i++) {
-            //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
-            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1,pesNumber1));
+
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
             list.add(vm[i]);
+            if(i<6){
+                vm[i].setHost(datacenters[i].getHostList().get(0));
+            }
+            else if(i>=6 && i<12){
+                vm[i].setHost(datacenters[i-6].getHostList().get(0));
+            }
+
+
         }
         for (int i = (int)(vms*0.4); i < (int)(vms*0.8); i++) {
-            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerTimeShared());
+
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
             list.add(vm[i]);
+            if(i<6+(int)(vms*0.4)){
+                vm[i].setHost(datacenters[i-(int)(vms*0.4)].getHostList().get(0));
+            }
+            else if(i>=6+(int)(vms*0.4) && i<12+(int)(vms*0.4)){
+                vm[i].setHost(datacenters[i-(int)(vms*0.4)-6].getHostList().get(0));
+            }
         }
         for (int i = (int)(vms*0.8); i < vms; i++) {
-            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
             list.add(vm[i]);
+            if(i<6+(int)(vms*0.8)){
+                vm[i].setHost(datacenters[i-(int)(vms*0.8)].getHostList().get(0));
+            }
+
         }
 
         return list;
@@ -196,14 +215,14 @@ public class PSO_Scheduler {
             //datacenter = DatacenterCreator.createDatacenter("DataCenter_"+1,Constants.NO_OF_VMS);
 
             //管理-数据中心
-            datacenter[0] = DatacenterCreator.createDatacenter("Datacenter_manage",1,1);
+            datacenter[0] = DatacenterCreator.createDatacenter("Datacenter_manage",0 ,1);
             //设计-数据中心
             for (int i = 1; i < 3; i++) {
                 datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i,1,2);
             }
             //施工-数据中心
             for (int i = 3; i < 6; i++) {
-                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i,1,3);
+                datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_" + i,2,3);
             }
 
             //Third step: Create Broker
@@ -211,7 +230,7 @@ public class PSO_Scheduler {
             int brokerId = broker.getId();
 
             //Fourth step: Create VMs and Cloudlets and send them to broker
-            vmList = createVM(brokerId, Constants.NO_OF_VMS);
+            vmList = createVM(brokerId, Constants.NO_OF_VMS,datacenter);
             cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
             //createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
             // mapping our dcIds to cloudsim dcIds

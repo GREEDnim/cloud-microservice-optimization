@@ -51,6 +51,7 @@ public class ChaosStrategy
     public void CalChaos() {
         Random rd = new Random();
         double chaosvalue = PLM(500,rd.nextDouble());
+        //double chaosvalue = PTent(rd.nextDouble());
         setChaosValue(chaosvalue);
     }
 
