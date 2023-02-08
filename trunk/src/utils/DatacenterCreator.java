@@ -2,6 +2,7 @@ package utils;
 
 
 import org.cloudbus.cloudsim.*;
+import org.cloudbus.cloudsim.network.datacenter.NetworkDatacenter;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -181,9 +182,11 @@ public class DatacenterCreator {
             peList.add(new Pe(1, new PeProvisionerSimple(mips)));
         }
 
+        //VmSchedulerSpaceShared :这个类实现空间共享调度策略，虚拟机被分配固定数量的资源(如CPU、内存)，资源在虚拟机之间共享。‒-固定数量的资源
+        //VmSchedulertimeshashared:这个类实现一个分时调度策略，虚拟机被分配相等的CPU时间。
         hostList.add(
                 new Host(
-                        0,
+                        hostId,
                         new RamProvisionerSimple(ram),
                         new BwProvisionerSimple(bw),
                         storage,
@@ -205,6 +208,7 @@ public class DatacenterCreator {
         Datacenter datacenter = null;
         try {
             datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+            //datacenter = new NetworkDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }

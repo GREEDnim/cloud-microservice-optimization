@@ -34,12 +34,10 @@ public class ACO_Scheduler
 //        execMatrix = GenerateMatrices.getExecMatrix();
 //        ACOSchedularInstance = new ACO();
 //        mapping = ACOSchedularInstance.run();
-        GenerateMatrices GM = new GenerateMatrices(vmList);
-        commMatrix = GM.getcommMatrix();
-        execMatrix = GM.getexecMatrix();
+
 
         try {
-            String filePath = "cloudlets1.txt";
+            String filePath = "cloudlets.txt";
             int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
             boolean trace_flag = false;  // mean trace events
@@ -68,7 +66,10 @@ public class ACO_Scheduler
             vmList = createVM(brokerId, Constants.NO_OF_VMS);
 //            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
             //createTasks(brokerId,filePath,Constants.NO_OF_TASKS);
-            cloudletList = createCloudlet(brokerId, Constants.NO_OF_TASKS, 0);
+            GenerateMatrices GM = new GenerateMatrices(vmList);
+            commMatrix = GM.getcommMatrix();
+            execMatrix = GM.getexecMatrix();
+            cloudletList = createTasks(brokerId, filePath, Constants.NO_OF_TASKS);
 
             broker.submitVmList(vmList);
 //            broker.setMapping(mapping);
@@ -162,44 +163,75 @@ public class ACO_Scheduler
         return list;
     }
 
-    protected static void createTasks(int brokerId,String filePath, int taskNum) {
-        try
-        {
+    private static List<Cloudlet> createTasks(int brokerId, String filePath, int cloudlets) {
+
+        LinkedList<Cloudlet> letList = new LinkedList<Cloudlet>();
+        try {
             @SuppressWarnings("resource")
-            BufferedReader br= new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
             String data = null;
             int index = 0;
 
-            //cloudlet properties.
-            int pesNumber = 1;
-            long fileSize = 1000;
-            long outputSize = 1000;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
+            //cloudlet1 parameters ：数据密集任务参数
+            long fileSize1 = 500;
+            long outputSize1 = 500;
+            int pesNumber1 = 1;
 
-            while ((data = br.readLine()) != null)
-            {
+            //cloudlet2 parameters ：计算密集性任务参数
+            long fileSize2 = 200;
+            long outputSize2 = 200;
+            int pesNumber2 = 2;
+
+            //cloudlet3 parameters ：跨数据中心任务参数
+            long fileSize3 = 300;
+            long outputSize3 = 300;
+            int pesNumber3 = 1;
+            int magnification = 2;
+            long memory3 = 800;
+            //UtilizationModel utilizationModel = new UtilizationModelFull();
+            UtilizationModelStochastic utilizationModel = new UtilizationModelStochastic();
+
+            while ((data = br.readLine()) != null) {
                 System.out.println(data);
-                String[] taskLength=data.split("\t");//tasklength[i]是任务执行的耗费（指令数量）
-                for(int j=0;j<20;j++){
-                    Cloudlet task=new Cloudlet(index+j, (long) Double.parseDouble(taskLength[j]), pesNumber, fileSize,
-                            outputSize, utilizationModel, utilizationModel,
-                            utilizationModel);
-                    task.setUserId(brokerId);
-                    cloudletList.add(task);
-                    if(cloudletList.size()==taskNum)
-                    {
+                String[] taskLength = data.split("\t");//tasklength[i]是任务执行的耗费（指令数量）
+                for (int j = 0; j < 20; j++) {
+
+                    //三种类型任务
+
+                    if(index+j < cloudlets*0.6) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber1, fileSize1,
+                                outputSize1, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
+                    }
+                    if ( index+j >= (int)(cloudlets*0.6) && index+j< cloudlets*0.9) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber2, fileSize2,
+                                outputSize2, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
+                    }
+                    if (index+j >= (int)(cloudlets*0.9)&& index+j < cloudlets) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber3, fileSize3,
+                                outputSize3, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
+                    }
+                    if (letList.size() == cloudlets) {
                         br.close();
-                        return;
+                        break;
                     }
                 }
                 //20 cloudlets each line in the file cloudlets.txt.
-                index+=20;
+                index += 20;
             }
-        }
-        catch (IOException e)
-        {
+
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return letList;
+
     }
     private static List<Cloudlet> createCloudlet(int userId,int cloudlets,int idShift) {
         LinkedList<Cloudlet> letList = new LinkedList<Cloudlet>();

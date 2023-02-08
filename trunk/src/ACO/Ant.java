@@ -24,7 +24,7 @@ import utils.Calculator;
 	public double tourLength;//蚂蚁获得的路径长度（分配好后，总的花费时间）
 	public long[] TL_task;//每个虚拟机的任务总量
 	public List<Integer> tabu;//禁忌表
-	private int VMs;//城市的个数（相当于虚拟机的个数）
+	private int VMs;//虚拟机的个数
 	private int tasks;//任务个数
 	private List<? extends Cloudlet> cloudletList;	//云任务列表
 	private List<? extends Vm> vmList;				//虚拟机列表

@@ -6,6 +6,7 @@ import utils.GenerateMatrices;
 import utils.VmType;
 
 
+
 public class SchedulerFitnessFunction extends FitnessFunction {
     private static double[][] execMatrix, commMatrix;
     SchedulerParticle  Particle;
@@ -110,13 +111,23 @@ public class SchedulerFitnessFunction extends FitnessFunction {
         return Consumption;
     }
     public  double calcLoadCost(double[] position) {
-        double utilization = 0.0;
+        double LoadCost = 0.0;
+
         for(int i =0;i<Constants.NO_OF_TASKS;i++)
         {
             int dcId = (int) position[i];
-            utilization += execMatrix[i][dcId];
+            if(dcId>=0 && dcId<Constants.NO_OF_VMS*0.4){
+                LoadCost += execMatrix[i][dcId]*VmType.Type1.cost;
+            }
+            else if(dcId>=Constants.NO_OF_VMS*0.4 && dcId<Constants.NO_OF_VMS*0.8){
+                LoadCost += execMatrix[i][dcId]*VmType.Type2.cost;
+            }
+            else if(dcId>=Constants.NO_OF_VMS*0.8 && dcId<Constants.NO_OF_VMS){
+                LoadCost += execMatrix[i][dcId]*VmType.Type3.cost;
+            }
+
 
         }
-        return utilization;
+        return LoadCost;
     }
 }

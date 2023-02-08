@@ -17,8 +17,6 @@ public class SchedulerParticle extends Particle {
 
 
 
-
-
     public SchedulerParticle() {
         super(Constants.NO_OF_TASKS);
         double[] position = new double[Constants.NO_OF_TASKS];
@@ -81,10 +79,10 @@ public class SchedulerParticle extends Particle {
     {
         //变异策略部分。
         double temp = this.getFitness()-this.getBestFitness();
-        double[] Position = getBestPosition();
+        double[] Position = MOPSO.Position;
         double[] Velocity = MOPSO.Velocity;
 
-        if(Math.abs(temp)<0.0005)
+        if(Math.abs(temp)<0.005)
         {
             count++;
             if(count>=15)//粒子连续10次判断都不活跃 进入变异环节

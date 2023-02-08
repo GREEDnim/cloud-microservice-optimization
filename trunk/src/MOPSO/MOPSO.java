@@ -22,7 +22,7 @@ public class MOPSO {
     public double[] run() {
         swarm = new Swarm(Constants.POPULATION_SIZE, new SchedulerParticle(), ff);
         double w_max = 0.9;//最大权重
-        double w_min = 0.4;//最小权重
+        double w_min = 0.6;//最小权重
         swarm.setInertia(0.9);
         swarm.setMinPosition(0);
         swarm.setMaxPosition(Constants.NO_OF_VMS - 1);

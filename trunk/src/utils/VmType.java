@@ -13,7 +13,7 @@ public class VmType {
         public static final int ram = 2048; // 2GB
         public static final int disk = 4000; // 4GB
         public static final int mips = 2048;
-        public static final int cost = 1000; // per hour
+        public static final int cost = 3;
         public static final int size = 10000;
         public static final int pesNumber = 2;
         public static final int bw = 2000;
@@ -26,7 +26,7 @@ public class VmType {
         public static final int ram = 1024; // 1GB
         public static final int disk = 3000; // 3GB
         public static final int mips = 1024;
-        public static final int cost = 1000;// per hour
+        public static final int cost = 1;// per hour
         public static final int size = 10000;
         public static final int pesNumber = 1;
         public static final int bw = 1500;
@@ -38,7 +38,7 @@ public class VmType {
         public static final int ram = 500; // 1GB
         public static final int disk = 1500; // 4GB
         public static final int mips = 512;
-        public static final int cost = 1000; // per hour
+        public static final int cost = 2; // per hour
         public static final int size = 10000;
         public static final int pesNumber = 1;
         public static final int bw = 1000;
