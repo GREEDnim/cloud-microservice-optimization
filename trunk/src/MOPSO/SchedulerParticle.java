@@ -64,7 +64,7 @@ public class SchedulerParticle extends Particle {
             else {
                 output += "There are " + no_of_tasks + " tasks associated to VM " + i + " totalcloudletLength " + totalcloudletLength + " and they are " + tasks + "\n";
             }
-            if(i == (int)(Constants.NO_OF_VMS*0.4) || i ==(int)(Constants.NO_OF_VMS*0.8)){
+            if(i == 10 || i == 20){
                 output += "\n"+ "================ 分割线 =================="+"\n";
             }
         }
@@ -82,10 +82,12 @@ public class SchedulerParticle extends Particle {
         double[] Position = MOPSO.Position;
         double[] Velocity = MOPSO.Velocity;
 
-        if(Math.abs(temp)<0.005)
+        //(4/Constants.NO_OF_TASKS)
+        if(Math.abs(temp)<0.05-(1/Constants.NO_OF_TASKS) )
         {
             count++;
-            if(count>=15)//粒子连续10次判断都不活跃 进入变异环节
+            //(int)(1000/Constants.NO_OF_TASKS)
+            if(count>=3 + (int)(1000/Constants.NO_OF_TASKS))//粒子连续3次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略

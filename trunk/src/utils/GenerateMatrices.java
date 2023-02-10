@@ -29,7 +29,7 @@ public class GenerateMatrices {
         }
     }
 
-    //基于已有虚拟机列表的各矩阵初始化
+    //基于已有虚拟机进行矩阵初始化
     public GenerateMatrices(List<Vm> vmlist){
         this.vmlist = vmlist;
         commMatrix = new double[Constants.NO_OF_TASKS][Constants.NO_OF_VMS];
@@ -111,7 +111,7 @@ public class GenerateMatrices {
         return execMatrix;
     }
 
-    //基于样本生成任务初始化矩阵的方法
+    //基于样本生成任务初始化矩阵的方法---提高初始化准确性
     private void initCostMatrix(String filePath) throws IOException
     {
         @SuppressWarnings("resource")
@@ -154,6 +154,7 @@ public class GenerateMatrices {
                 commMatrix[i][j] = Calculator.div(VmList.getById(vmlist,j).getSize(),VmList.getById(vmlist, j).getBw());
                 // 执行消耗 = 随机任务长度 / mips = (1000~2000)/1000
                 //execMatrix[i][j] = Calculator.div(LengthGroup[rm.nextInt(Constants.NO_OF_TASKS)],VmList.getById(vmlist, j).getMips());
+                // 执行消耗 = 任务长度 / mips = (1000~2000)/1000
                 execMatrix[i][j] = Calculator.div(LengthGroup[i],VmList.getById(vmlist, j).getMips());
                  //execMatrix[i][j] = Calculator.div(LengthGroup[i],VmList.getById(vmlist, j).getHost().getTotalAllocatedMipsForVm(VmList.getById(vmlist, j)));
                 commBufferedWriter.write(String.valueOf(commMatrix[i][j]) + ' ');

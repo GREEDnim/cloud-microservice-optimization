@@ -36,8 +36,11 @@ public class PSO {
 
         System.out.println("\nThe best fitness value: " + swarm.getBestFitness() + "\nBest makespan: " + ff.calcMakespan(swarm.getBestParticle().getBestPosition()));
         System.out.println("The best calcTotalTime:"+ff.calcTotalTime(swarm.getBestParticle().getPosition()));
+        System.out.println("loadBalance"+ff.loadBalance(swarm.getBestParticle().getBestPosition()));
+        for (int i = 0; i < Constants.NO_OF_VMS; i++){
+            System.out.println("vmSerTime "+i+"  "+ff.vmSerTime(swarm.getBestParticle().getBestPosition())[i]);
+        }
         System.out.println("calcLoadCost"+ff.calcLoadCost(swarm.getBestParticle().getBestPosition()));
-
         System.out.println("The best solution is: ");
         SchedulerParticle bestParticle = (SchedulerParticle) swarm.getBestParticle();
         System.out.println(bestParticle.toString());

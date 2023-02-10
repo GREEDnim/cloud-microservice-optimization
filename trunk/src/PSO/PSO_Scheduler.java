@@ -37,28 +37,28 @@ public class PSO_Scheduler {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
 
-        //VM Parameters1  适用于计算密集-计算大 （0.4个）  第一类-高性能
+        //VM Parameters1  适用于计算密集-计算大 （10个）  第一类-高性能
         long size1 = 10000; //image size (MB)
         int ram1 = 1024; //vm memory (MB)
-        int mips1 = 2000;//处理时长
+        int mips1 = 2000;//处理时长           *************
         long bw1 = 1000;// VM带宽（mbps）
         int pesNumber1 = 2; //number of cpus
         String vmm1 = "Xen"; //VMM name
 
-        //VM Parameters2  适用于数据密集-内存大（0.4个）   第二类-低性能
-        long size2 = 20000; //image size (MB)
-        int ram2 = 2048; //vm memory (MB)
-        int mips2 = 1000;//处理时长
-        long bw2 = 1000;// VM带宽（mbps）
-        int pesNumber2 = 1; //number of cpus
+        //VM Parameters3  跨数据中心--带宽大 (10个)      第二类-中性能
+        long size2 = 15000; //image size (MB)
+        int ram2 = 1024; //vm memory (MB)
+        int mips2 = 1000;//处理时长           *********
+        long bw2 = 2000;// VM带宽（mbps）
+        int pesNumber2 = 2; //number of cpus
         String vmm2 = "Xen"; //VMM name
 
-        //VM Parameters1  跨数据中心--带宽大 (0.2个)      第三类-中性能
-        long size3 = 15000; //image size (MB)
-        int ram3 = 1024; //vm memory (MB)
-        int mips3 = 1500;//处理时长
-        long bw3 = 2000;// VM带宽（mbps）
-        int pesNumber3 = 1; //number of cpus
+        //VM Parameters3  适用于数据密集-内存大（10个）   第三类-低性能
+        long size3 = 20000; //image size (MB)
+        int ram3 = 2048; //vm memory (MB)
+        int mips3 = 500;//处理时长           *****
+        long bw3 = 1000;// VM带宽（mbps）
+        int pesNumber3 = 2; //number of cpus
         String vmm3 = "Xen"; //VMM name
 
 
@@ -67,7 +67,7 @@ public class PSO_Scheduler {
         //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
         //new CloudletSchedulerTimeShared():空间共享，所有虚拟机共享相同的cpu和内存，每个cloudlet到达后立即执行
         //CloudletSchedulerSpaceShared()：以分时方式调度cloudlets，特定时间为每个任务分配一定量的CPU和内存资源，循环方式执行
-        for (int i = 0; i < vms*0.4; i++) {
+/*        for (int i = 0; i < vms*0.4; i++) {
             vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
@@ -100,6 +100,27 @@ public class PSO_Scheduler {
             if(i<6+(int)(vms*0.8)){
                 vm[i].setHost(datacenter[i-(int)(vms*0.8)].getHostList().get(0));
             }
+        }*/
+
+        for (int i = 0; i < 10; i++) {
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
+            list.add(vm[i]);
+        }
+        for (int i = 10; i < 20; i++) {
+
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            list.add(vm[i]);
+
+        }
+        for (int i = 20; i < vms; i++) {
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+            list.add(vm[i]);
+
         }
 
         return list;

@@ -1,12 +1,10 @@
 package FCFS;
 
 
+import MOPSO.MOPSO_Scheduler;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
-import utils.Constants;
-import utils.DatacenterCreator;
-import utils.GenerateMatrices;
-import utils.VmType;
+import utils.*;
 import org.cloudbus.cloudsim.Cloudlet;
 
 import java.io.BufferedReader;
@@ -34,28 +32,28 @@ public class FCFS_Scheduler {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
 
-        //VM Parameters1  适用于计算密集-计算大 （0.4个）  第一类-高性能
+        //VM Parameters1  适用于计算密集-计算大 （10个）  第一类-高性能
         long size1 = 10000; //image size (MB)
         int ram1 = 1024; //vm memory (MB)
-        int mips1 = 2000;//处理时长
+        int mips1 = 2000;//处理时长           *************
         long bw1 = 1000;// VM带宽（mbps）
         int pesNumber1 = 2; //number of cpus
         String vmm1 = "Xen"; //VMM name
 
-        //VM Parameters2  适用于数据密集-内存大（0.4个）   第二类-低性能
-        long size2 = 20000; //image size (MB)
-        int ram2 = 2048; //vm memory (MB)
-        int mips2 = 1000;//处理时长
-        long bw2 = 1000;// VM带宽（mbps）
-        int pesNumber2 = 1; //number of cpus
+        //VM Parameters3  跨数据中心--带宽大 (10个)      第二类-中性能
+        long size2 = 15000; //image size (MB)
+        int ram2 = 1024; //vm memory (MB)
+        int mips2 = 1000;//处理时长           *********
+        long bw2 = 2000;// VM带宽（mbps）
+        int pesNumber2 = 2; //number of cpus
         String vmm2 = "Xen"; //VMM name
 
-        //VM Parameters1  跨数据中心--带宽大 (0.2个)      第三类-中性能
-        long size3 = 15000; //image size (MB)
-        int ram3 = 1024; //vm memory (MB)
-        int mips3 = 1500;//处理时长
-        long bw3 = 2000;// VM带宽（mbps）
-        int pesNumber3 = 1; //number of cpus
+        //VM Parameters3  适用于数据密集-内存大（10个）   第三类-低性能
+        long size3 = 20000; //image size (MB)
+        int ram3 = 2048; //vm memory (MB)
+        int mips3 = 500;//处理时长           *****
+        long bw3 = 1000;// VM带宽（mbps）
+        int pesNumber3 = 2; //number of cpus
         String vmm3 = "Xen"; //VMM name
 
 
@@ -64,7 +62,7 @@ public class FCFS_Scheduler {
         //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
         //new CloudletSchedulerTimeShared():空间共享，所有虚拟机共享相同的cpu和内存，每个cloudlet到达后立即执行
         //CloudletSchedulerSpaceShared()：以分时方式调度cloudlets，特定时间为每个任务分配一定量的CPU和内存资源，循环方式执行
-        for (int i = 0; i < vms*0.4; i++) {
+/*        for (int i = 0; i < vms*0.4; i++) {
             vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
@@ -97,6 +95,27 @@ public class FCFS_Scheduler {
             if(i<6+(int)(vms*0.8)){
                 vm[i].setHost(datacenter[i-(int)(vms*0.8)].getHostList().get(0));
             }
+        }*/
+
+        for (int i = 0; i < 10; i++) {
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
+            list.add(vm[i]);
+        }
+        for (int i = 10; i < 20; i++) {
+
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            list.add(vm[i]);
+
+        }
+        for (int i = 20; i < vms; i++) {
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+            list.add(vm[i]);
+
         }
 
         return list;
@@ -184,6 +203,29 @@ public class FCFS_Scheduler {
 
         return list;
     }
+    private static List<Vm> createVM3(int userId, int vms) {
+        //Creates a container to store VMs. This list is passed to the broker later
+        LinkedList<Vm> list = new LinkedList<Vm>();
+
+        //VM Parameters3  跨数据中心--带宽大 (10个)      第二类-中性能
+        long size2 = 15000; //image size (MB)
+        int ram2 = 1024; //vm memory (MB)
+        int mips2 = 1000;//处理时长           *********
+        long bw2 = 2000;// VM带宽（mbps）
+        int pesNumber2 = 2; //number of cpus
+        String vmm2 = "Xen"; //VMM name
+        //create VMs
+        Vm[] vm = new Vm[vms];
+
+        for (int i = 0; i < vms; i++) {
+
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            list.add(vm[i]);
+        }
+        return list;
+    }
 
     private static List<Cloudlet> createTasks(int brokerId, String filePath, int cloudlets) {
 
@@ -219,8 +261,7 @@ public class FCFS_Scheduler {
                 for (int j = 0; j < 20; j++) {
 
                     //三种类型任务
-
-                    if(index+j < cloudlets*0.6) {
+/*                    if(index+j < cloudlets*0.6) {
                         Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber1, fileSize1,
                                 outputSize1, utilizationModel, utilizationModel, utilizationModel);
                         task.setUserId(brokerId);
@@ -237,7 +278,27 @@ public class FCFS_Scheduler {
                                 outputSize3, utilizationModel, utilizationModel, utilizationModel);
                         task.setUserId(brokerId);
                         letList.add(task);
+                    }*/
+
+                    if(Double.parseDouble(taskLength[j]) < 1000) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber1, fileSize1,
+                                outputSize1, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
                     }
+                    if ( Double.parseDouble(taskLength[j]) >= 1000 && Double.parseDouble(taskLength[j])<2000) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber2, fileSize2,
+                                outputSize2, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
+                    }
+                    if (Double.parseDouble(taskLength[j]) >= 2000) {
+                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber3, fileSize3,
+                                outputSize3, utilizationModel, utilizationModel, utilizationModel);
+                        task.setUserId(brokerId);
+                        letList.add(task);
+                    }
+
                     if (letList.size() == cloudlets) {
                         br.close();
                         break;
@@ -430,6 +491,12 @@ public class FCFS_Scheduler {
         double mxFinishTime = 0.0;
         double LoadCost = 0.0;
         double makespan = 0.0;
+        //计算负载
+        double[] vmSerTime = new double[Constants.NO_OF_VMS];
+
+        double[] vmLoad = new double[Constants.NO_OF_VMS];
+        double[] vmAbility = new double[Constants.NO_OF_VMS];
+
         double[] dcWorkingTime = new double[Constants.NO_OF_VMS];
         DecimalFormat dft = new DecimalFormat("###.##");
 
@@ -456,6 +523,7 @@ public class FCFS_Scheduler {
 
 
                 int dcId = cloudlet.getVmId();
+                vmLoad[dcId] += execMatrix[i][dcId];
                 if(dcId>=0 && dcId<Constants.NO_OF_VMS*0.4){
                     LoadCost += execMatrix[i][dcId]*VmType.Type1.cost;
                 }
@@ -471,17 +539,35 @@ public class FCFS_Scheduler {
                 makespan = Math.max(makespan, dcWorkingTime[dcId]);
 
 
-
+                //计算每个虚拟机的运算能力 不考虑虚拟机类型
+                //vmAbility[dcId] = getVmById(cloudlet.getVmId()).getMips()*2+getVmById(cloudlet.getVmId()).getBw();
+                vmAbility[dcId] = getVmById(cloudlet.getVmId()).getMips();
             }
-
-
 
             mxFinishTime = Math.max(mxFinishTime, cloudlet.getFinishTime());
         }
+        double avgSerTime =  0.0;
+        double vmTotalTime = 0.0;
+        double loadLevel = 0.0;
+        //计算负载
+        for (int i = 0; i < vmAbility.length; i++) {
+            vmSerTime[i] = Calculator.div(vmLoad[i],vmAbility[i]);
+            Log.printLine("vmSerTime"+i +"  "+ vmSerTime[i]);
+            vmTotalTime +=  vmSerTime[i] ;
+        }
+        avgSerTime = Calculator.div(vmTotalTime,Constants.NO_OF_VMS);
+        double sum = 0.0;
+        for (double num : vmSerTime) {
+            sum += (num - avgSerTime) * (num - avgSerTime);
+        }
+        loadLevel =  Calculator.div(sum,Constants.NO_OF_VMS)+0.001;
+
         Log.printLine("================ Execution Result Ends here ==================");
         Log.printLine("mxFinishTime"+ mxFinishTime);
         Log.printLine("Makespan using FCFS: " + makespan);
+        Log.printLine("loadLevel using FCFS: " + loadLevel);
         Log.printLine("LoadCost using FCFS: " + LoadCost);
+        Log.printLine("avgSerTime"+ avgSerTime);
         return mxFinishTime;
     }
     public static Vm getVmById(int vmId){
@@ -524,6 +610,34 @@ public class FCFS_Scheduler {
         }
 
         return utilization;
+    }
+
+    public double loadBalance(double[] position) {
+        double[] vmSerTime = new double[Constants.NO_OF_VMS];
+        double avgSerTime =  0.0;
+        double vmTotalTime = 0.0;
+        double loadLevel = 0.0;
+
+        for (int i = 0; i < Constants.NO_OF_VMS; i++) {
+            double vmLoad = 0;
+            double vmAbility = MOPSO_Scheduler.getVmById(i).getMips()*2+MOPSO_Scheduler.getVmById(i).getBw();
+            for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
+                if (i == (int)position[i]){
+                    vmLoad += execMatrix[j][i] + commMatrix[j][i];;
+                }
+            }
+            vmSerTime[i] = vmLoad/vmAbility;
+            vmTotalTime += vmSerTime[i] ;
+        }
+        avgSerTime = vmTotalTime/Constants.NO_OF_VMS;
+        double sum = 0.0;
+        for (double num : vmSerTime) {
+            sum += (num - avgSerTime) * (num - avgSerTime);
+        }
+        loadLevel = Math.sqrt(sum / vmSerTime.length);
+
+        return loadLevel;
+
     }
 
 
