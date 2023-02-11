@@ -48,13 +48,12 @@ public class MOPSO_Scheduler {
         LinkedList<Vm> list = new LinkedList<Vm>();
         //List<Host> hostLis = DatacenterCreator.hostLists;
 
-
         //VM Parameters1  适用于计算密集-计算大 （10个）  第一类-高性能
         long size1 = 10000; //image size (MB)
         int ram1 = 1024; //vm memory (MB)
         int mips1 = 2000;//处理时长           *************
-        long bw1 = 1000;// VM带宽（mbps）
-        int pesNumber1 = 2; //number of cpus
+        long bw1 = 1500;// VM带宽（mbps）
+        int pesNumber1 = 1; //number of cpus
         String vmm1 = "Xen"; //VMM name
 
         //VM Parameters3  跨数据中心--带宽大 (10个)      第二类-中性能
@@ -62,7 +61,7 @@ public class MOPSO_Scheduler {
         int ram2 = 1024; //vm memory (MB)
         int mips2 = 1000;//处理时长           *********
         long bw2 = 2000;// VM带宽（mbps）
-        int pesNumber2 = 2; //number of cpus
+        int pesNumber2 = 1; //number of cpus
         String vmm2 = "Xen"; //VMM name
 
         //VM Parameters3  适用于数据密集-内存大（10个）   第三类-低性能
@@ -70,36 +69,30 @@ public class MOPSO_Scheduler {
         int ram3 = 2048; //vm memory (MB)
         int mips3 = 500;//处理时长           *****
         long bw3 = 1000;// VM带宽（mbps）
-        int pesNumber3 = 2; //number of cpus
+        int pesNumber3 = 1; //number of cpus
         String vmm3 = "Xen"; //VMM name
-
 
         //create VMs
         Vm[] vm = new Vm[vms];
         //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
         //new CloudletSchedulerTimeShared():空间共享，所有虚拟机共享相同的cpu和内存，每个cloudlet到达后立即执行
         //CloudletSchedulerSpaceShared()：以分时方式调度cloudlets，特定时间为每个任务分配一定量的CPU和内存资源，循环方式执行
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < vms; i+=3) {
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
             vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
-            list.add(vm[i]);
-        }
-        for (int i = 10; i < 20; i++) {
 
-            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            vm[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
             //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
-            list.add(vm[i]);
 
-        }
-        for (int i = 20; i < vms; i++) {
-            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+
             list.add(vm[i]);
-
+            list.add(vm[i+1]);
+            list.add(vm[i+2]);
         }
-
         return list;
     }
 
@@ -212,7 +205,7 @@ public class MOPSO_Scheduler {
             //cloudlet3 parameters ：计算型任务
             long fileSize3 = 200;
             long outputSize3 = 200;
-            int pesNumber3 = 2;
+            int pesNumber3 = 1;
 
 
             //UtilizationModel utilizationModel = new UtilizationModelFull();
@@ -223,40 +216,19 @@ public class MOPSO_Scheduler {
                 String[] taskLength = data.split("\t");//tasklength[i]是任务执行的耗费（指令数量）
                 for (int j = 0; j < 20; j++) {
 
-                    //三种类型任务
-
-/*                    if(index+j < cloudlets*0.6) {
+                    if(Double.parseDouble(taskLength[j]) < 3000) {
                         Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber1, fileSize1,
                                 outputSize1, utilizationModel, utilizationModel, utilizationModel);
                         task.setUserId(brokerId);
                         letList.add(task);
                     }
-                    if ( index+j >= (int)(cloudlets*0.6) && index+j< cloudlets*0.9) {
+                    if ( Double.parseDouble(taskLength[j]) >= 3000 && Double.parseDouble(taskLength[j])<=6000) {
                         Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber2, fileSize2,
                                 outputSize2, utilizationModel, utilizationModel, utilizationModel);
                         task.setUserId(brokerId);
                         letList.add(task);
                     }
-                    if (index+j >= (int)(cloudlets*0.9)&& index+j < cloudlets) {
-                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber3, fileSize3,
-                                outputSize3, utilizationModel, utilizationModel, utilizationModel);
-                        task.setUserId(brokerId);
-                        letList.add(task);
-                    }*/
-
-                    if(Double.parseDouble(taskLength[j]) < 1000) {
-                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber1, fileSize1,
-                                outputSize1, utilizationModel, utilizationModel, utilizationModel);
-                        task.setUserId(brokerId);
-                        letList.add(task);
-                    }
-                    if ( Double.parseDouble(taskLength[j]) >= 1000 && Double.parseDouble(taskLength[j])<2000) {
-                        Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber2, fileSize2,
-                                outputSize2, utilizationModel, utilizationModel, utilizationModel);
-                        task.setUserId(brokerId);
-                        letList.add(task);
-                    }
-                    if (Double.parseDouble(taskLength[j]) >= 2000) {
+                    if (Double.parseDouble(taskLength[j]) >= 8000) {
                         Cloudlet task = new Cloudlet(index + j, (long) Double.parseDouble(taskLength[j]), pesNumber3, fileSize3,
                                 outputSize3, utilizationModel, utilizationModel, utilizationModel);
                         task.setUserId(brokerId);

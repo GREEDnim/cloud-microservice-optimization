@@ -19,7 +19,7 @@ public class SchedulerFitnessFunction extends FitnessFunction{
 
     @Override
     public double evaluate(double[] position) {
-        double alpha = 0.3;
+        double alpha = 0.0;
         return alpha*loadBalance(position)*100 + (1 - alpha) * calcMakespan(position);
         //return calcMakespan(position);
     }
@@ -75,28 +75,16 @@ public class SchedulerFitnessFunction extends FitnessFunction{
 
     public double loadBalance(double[] position) {
         double[] vmSerTime = new double[Constants.NO_OF_VMS];
-        double[] vmLoad = new double[Constants.NO_OF_VMS];
-        double[] vmAbility = new double[Constants.NO_OF_VMS];
         double vmTotalTime = 0.0;
 
         for (int i = 0; i < Constants.NO_OF_VMS; i++) {
-            if(i<10){
-                vmAbility[i] = 2000;
-            }
-            else if(i<20 && i>=10){
-                vmAbility[i] = 1000;
-            }
-            else if(i<Constants.NO_OF_VMS && i>=20){
-                vmAbility[i] = 500;
-            }
             for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
                 if (i == (int)position[j]){
-                    vmLoad[i] += execMatrix[j][i];
+                    vmSerTime[i] += execMatrix[j][i];
                 }
             }
         }
         for (int i = 0; i < Constants.NO_OF_VMS; i++) {
-            vmSerTime[i] = Calculator.div(vmLoad[i],vmAbility[i]);
             vmTotalTime += vmSerTime[i];
         }
         double avgSerTime = Calculator.div(vmTotalTime,Constants.NO_OF_VMS);
@@ -105,32 +93,17 @@ public class SchedulerFitnessFunction extends FitnessFunction{
             sum += (num - avgSerTime) * (num - avgSerTime);
         }
         //loadLevel = Math.sqrt(sum / vmSerTime.length);
-        return  Calculator.div(sum,Constants.NO_OF_VMS)+0.001;
-
+        return  Calculator.div(sum,Constants.NO_OF_VMS);
     }
 
     public double[] vmSerTime(double[] position) {
         double[] vmSerTime = new double[Constants.NO_OF_VMS];
-        double[] vmLoad = new double[Constants.NO_OF_VMS];
-        double[] vmAbility = new double[Constants.NO_OF_VMS];
         for (int i = 0; i < Constants.NO_OF_VMS; i++) {
-            if(i<10){
-                vmAbility[i] = 2000;
-            }
-            else if(i<20 && i>=10){
-                vmAbility[i] = 1000;
-            }
-            else if(i<Constants.NO_OF_VMS && i>=20){
-                vmAbility[i] = 500;
-            }
             for (int j = 0; j < Constants.NO_OF_TASKS; j++) {
-                if ( i== (int)position[j]){
-                    vmLoad[i] += execMatrix[j][i];
+                if (i == (int)position[j]){
+                    vmSerTime[i] += execMatrix[j][i];
                 }
             }
-        }
-        for (int i = 0; i < Constants.NO_OF_VMS; i++) {
-            vmSerTime[i] = Calculator.div(vmLoad[i],vmAbility[i]) ;
         }
         return  vmSerTime;
     }

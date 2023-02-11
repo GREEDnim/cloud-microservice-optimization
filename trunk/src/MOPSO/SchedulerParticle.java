@@ -64,7 +64,7 @@ public class SchedulerParticle extends Particle {
             else {
                 output += "There are " + no_of_tasks + " tasks associated to VM " + i + " totalcloudletLength " + totalcloudletLength + " and they are " + tasks + "\n";
             }
-            if(i == 10 || i == 20){
+            if((i+1)%3==0){
                 output += "\n"+ "================ 分割线 =================="+"\n";
             }
         }
@@ -82,16 +82,18 @@ public class SchedulerParticle extends Particle {
         double[] Position = MOPSO.Position;
         double[] Velocity = MOPSO.Velocity;
 
-        //(4/Constants.NO_OF_TASKS)
-        if(Math.abs(temp)<0.05-(1/Constants.NO_OF_TASKS) )
+        //(4/Constants.NO_OF_TASKS)  -(1/Constants.NO_OF_TASKS)
+        if(Math.abs(temp)<0.04 )
         {
             count++;
-            //(int)(1000/Constants.NO_OF_TASKS)
-            if(count>=3 + (int)(1000/Constants.NO_OF_TASKS))//粒子连续3次判断都不活跃 进入变异环节
+            //(int)(1000/Constants.NO_OF_TASKS) + (int)(1000/Constants.NO_OF_TASKS)
+            //900----4--
+            //1000--8
+            if(count>=8)//粒子连续10次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略
-                System.out.println("go particle mutation!-粒子超出边界-启动变异策略");
+                System.out.println("go particle mutation!-粒子超出边界"+10+"次-启动变异策略");
                 ChaosStrategy instance = ChaosStrategy.getInstance();
                 instance.CalChaos();
 

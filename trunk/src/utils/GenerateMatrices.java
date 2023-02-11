@@ -127,8 +127,9 @@ public class GenerateMatrices {
                 LengthGroup[index+j] = Double.parseDouble(taskLength[j]);
                 if((index+j+1)==Constants.NO_OF_TASKS)
                 {
-                    br.close();
+
                     initMatrix(LengthGroup);
+                    br.close();
                     return;
                 }
             }
