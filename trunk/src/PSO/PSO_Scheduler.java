@@ -3,10 +3,7 @@ package PSO;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import utils.Constants;
-import utils.DatacenterCreator;
-import utils.GenerateMatrices;
-import utils.VmType;
+import utils.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -71,13 +68,16 @@ public class PSO_Scheduler {
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
             vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerTimeShared());
 
             vm[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
             //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            //vm[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerTimeShared());
 
             vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+            //vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerTimeShared());
 
             list.add(vm[i]);
             list.add(vm[i+1]);
@@ -294,6 +294,8 @@ public class PSO_Scheduler {
 
             //printCloudletList(newList);
             PrintResults(newList);
+            PrintLatency(newList);
+            PrintStartTime(newList);
             Log.printLine(PSO_Scheduler.class.getName() + " finished!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -389,6 +391,66 @@ public class PSO_Scheduler {
         Log.printLine("================ Execution Result Ends here ==================");
         Log.printLine("最大完成时间mxFinishTime"+ mxFinishTime);
         return mxFinishTime;
+    }
+
+
+    private static double PrintLatency(List<Cloudlet> list) {
+        int size = list.size();
+        Cloudlet cloudlet;
+
+        //UtilizationModelStochastic UtilizationModelStochastic = new UtilizationModelStochastic();
+        //UtilizationModelPlanetLabInMemory UtilizationMode = new UtilizationModelPlanetLabInMemory();
+        //UtilizationModelFull UtilizationModelFull = new UtilizationModelFull();
+        Log.printLine("================ Execution Result Latency ==================");
+
+        double mxLatencyTime = 0;
+        double LatencyTime = 0;
+        double AvgLatencyTime = 0;
+        double totalLatencyTime = 0;
+        int sucnum = 0;
+        DecimalFormat dft = new DecimalFormat("###.##");
+        for (int i = 0; i < size; i++)
+        {
+            cloudlet = list.get(i);
+
+            if (cloudlet.getStatus()== Cloudlet.SUCCESS)
+            {
+                LatencyTime = cloudlet.getFinishTime()-cloudlet.getExecStartTime();
+                totalLatencyTime += LatencyTime;
+                sucnum++;
+            }
+            mxLatencyTime = Math.max(mxLatencyTime, LatencyTime);
+        }
+        AvgLatencyTime = Calculator.div(totalLatencyTime,sucnum);
+        Log.printLine("mxLatencyTime:"+mxLatencyTime);
+        Log.printLine("AvgLatencyTime:"+AvgLatencyTime);
+        return mxLatencyTime;
+    }
+
+    private static double PrintStartTime(List<Cloudlet> list) {
+        int size = list.size();
+        Cloudlet cloudlet;
+
+        //UtilizationModelStochastic UtilizationModelStochastic = new UtilizationModelStochastic();
+        //UtilizationModelPlanetLabInMemory UtilizationMode = new UtilizationModelPlanetLabInMemory();
+        //UtilizationModelFull UtilizationModelFull = new UtilizationModelFull();
+        Log.printLine("================ Execution Result Latency ==================");
+
+        double maxStartTime = 0;
+        double StartTime = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            cloudlet = list.get(i);
+
+            if (cloudlet.getStatus()== Cloudlet.SUCCESS)
+            {
+                StartTime = cloudlet.getExecStartTime();
+            }
+            maxStartTime = Math.max(maxStartTime, StartTime);
+        }
+        Log.printLine("maxStartTime:"+maxStartTime);
+        return maxStartTime;
     }
 
     public static Vm getVmById(int vmId){

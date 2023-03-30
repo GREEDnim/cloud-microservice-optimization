@@ -81,19 +81,20 @@ public class SchedulerParticle extends Particle {
         double temp = this.getFitness()-this.getBestFitness();
         double[] Position = MOPSO.Position;
         double[] Velocity = MOPSO.Velocity;
+        int r = 15;
 
         //(4/Constants.NO_OF_TASKS)  -(1/Constants.NO_OF_TASKS)
-        if(Math.abs(temp)<0.04 )
+        if(Math.abs(temp)<0.004 )
         {
             count++;
             //(int)(1000/Constants.NO_OF_TASKS) + (int)(1000/Constants.NO_OF_TASKS)
             //900----4--
             //1000--8
-            if(count>=8)//粒子连续10次判断都不活跃 进入变异环节
+            if(count>=r)//粒子连续10次判断都不活跃 进入变异环节
             {
                 count=0;
                 //启动变异策略
-                System.out.println("go particle mutation!-粒子超出边界"+10+"次-启动变异策略");
+                System.out.println("go particle mutation!-粒子超出边界"+r+"次-启动变异策略");
                 ChaosStrategy instance = ChaosStrategy.getInstance();
                 instance.CalChaos();
 
@@ -123,7 +124,7 @@ public class SchedulerParticle extends Particle {
         //for (int i=0;i<Position.length;i++){
         //System.out.println("粒子"+ i +"Position："+ Position[i]);
         //}
-        if(Math.abs(temp)<0.005)
+        if(Math.abs(temp)<0.04)
         {
             count++;
             if(count>=10)//粒子连续5次判断都不活跃 进入变异环节

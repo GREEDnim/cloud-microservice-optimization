@@ -446,6 +446,14 @@ public class FCFS_Scheduler {
         double[] dcWorkingTime = new double[Constants.NO_OF_VMS];
         DecimalFormat dft = new DecimalFormat("###.##");
 
+
+        double mxLatencyTime = 0;
+        double LatencyTime = 0;
+        double AvgLatencyTime = 0;
+        double totalLatencyTime = 0;
+        double maxStartTime = 0;
+        int sucnum = 0;
+
         for (int i = 0; i < size; i++)
         {
             cloudlet = list.get(i);
@@ -466,7 +474,9 @@ public class FCFS_Scheduler {
                                 + indent + indent
                                 + dft.format(cloudlet.getFinishTime()));
 
-
+                LatencyTime = cloudlet.getFinishTime()- cloudlet.getExecStartTime();
+                totalLatencyTime += LatencyTime;
+                sucnum++;
 
                 int dcId = cloudlet.getVmId();
                 vmSerTime[dcId] += execMatrix[i][dcId];
@@ -482,12 +492,15 @@ public class FCFS_Scheduler {
                 if(dcWorkingTime[dcId] != 0) --dcWorkingTime[dcId];
                 dcWorkingTime[dcId] += execMatrix[i][dcId] + commMatrix[i][dcId];
                 makespan = Math.max(makespan, dcWorkingTime[dcId]);
+                mxLatencyTime = Math.max(mxLatencyTime, LatencyTime);
                 //计算每个虚拟机的运算能力 不考虑虚拟机类型
                 //vmAbility[dcId] = getVmById(cloudlet.getVmId()).getMips()*2+getVmById(cloudlet.getVmId()).getBw();
                 //vmAbility[dcId] = getVmById(cloudlet.getVmId()).getMips();
             }
 
             mxFinishTime = Math.max(mxFinishTime, cloudlet.getFinishTime());
+            maxStartTime = Math.max(maxStartTime, cloudlet.getExecStartTime());
+            AvgLatencyTime = Calculator.div(totalLatencyTime,sucnum);
         }
         double avgSerTime =  0.0;
         double vmTotalTime = 0.0;
@@ -508,6 +521,10 @@ public class FCFS_Scheduler {
         Log.printLine("mxFinishTime"+ mxFinishTime);
         Log.printLine("Makespan using FCFS: " + makespan);
         Log.printLine("loadLevel using FCFS: " + loadLevel);
+        Log.printLine("mxLatencyTime using FCFS: " + mxLatencyTime);
+        Log.printLine("AvgLatencyTime using FCFS: " + AvgLatencyTime);
+        Log.printLine("maxStartTime: " + maxStartTime);
+
         Log.printLine("LoadCost using FCFS: " + LoadCost);
         Log.printLine("avgSerTime"+ avgSerTime);
         return mxFinishTime;

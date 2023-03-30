@@ -6,10 +6,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
 import sun.util.resources.ga.LocaleNames_ga;
-import utils.Constants;
-import utils.DatacenterCreator;
-import utils.GenerateMatrices;
-import utils.VmType;
+import utils.*;
 
 
 import java.io.BufferedReader;
@@ -43,7 +40,7 @@ public class MOPSO_Scheduler {
 
 
 
-    private static List<Vm> createVM(int userId, int vms) {
+    private static List<Vm> createVM2(int userId, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         LinkedList<Vm> list = new LinkedList<Vm>();
         //List<Host> hostLis = DatacenterCreator.hostLists;
@@ -78,20 +75,76 @@ public class MOPSO_Scheduler {
         //new CloudletSchedulerTimeShared():空间共享，所有虚拟机共享相同的cpu和内存，每个cloudlet到达后立即执行
         //CloudletSchedulerSpaceShared()：以分时方式调度cloudlets，特定时间为每个任务分配一定量的CPU和内存资源，循环方式执行
         for (int i = 0; i < vms; i+=3) {
-            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
-            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
 
-            vm[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            //[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
             //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
-            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            vm[i+1] = new Vm(i+1, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
 
-            vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
-            //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+            //vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            vm[i+2] = new Vm(i+2, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
 
             list.add(vm[i]);
             list.add(vm[i+1]);
             list.add(vm[i+2]);
+        }
+        return list;
+    }
+
+    private static List<Vm> createVM(int userId, int vms) {
+        //Creates a container to store VMs. This list is passed to the broker later
+        LinkedList<Vm> list = new LinkedList<Vm>();
+
+        //VM Parameters1  适用于计算密集-计算大 （10个）  第一类-高性能
+        long size1 = 10000; //image size (MB)
+        int ram1 = 1024; //vm memory (MB)
+        int mips1 = 2000;//处理时长           *************
+        long bw1 = 1500;// VM带宽（mbps）
+        int pesNumber1 = 1; //number of cpus
+        String vmm1 = "Xen"; //VMM name
+
+        //VM Parameters3  跨数据中心--带宽大 (10个)      第二类-中性能
+        long size2 = 15000; //image size (MB)
+        int ram2 = 1024; //vm memory (MB)
+        int mips2 = 1000;//处理时长           *********
+        long bw2 = 2000;// VM带宽（mbps）
+        int pesNumber2 = 1; //number of cpus
+        String vmm2 = "Xen"; //VMM name
+
+        //VM Parameters3  适用于数据密集-内存大（10个）   第三类-低性能
+        long size3 = 20000; //image size (MB)
+        int ram3 = 2048; //vm memory (MB)
+        int mips3 = 500;//处理时长           *****
+        long bw3 = 1000;// VM带宽（mbps）
+        int pesNumber3 = 1; //number of cpus
+        String vmm3 = "Xen"; //VMM name
+
+
+        //create VMs
+        Vm[] vm = new Vm[vms];
+        //CloudletSchedulerDynamicWorkload:动态调整分配的时间，提高整体性能和效率。考虑到进度和截止任务时间
+        //new CloudletSchedulerTimeShared():空间共享，所有虚拟机共享相同的cpu和内存，每个cloudlet到达后立即执行
+        //CloudletSchedulerSpaceShared()：以分时方式调度cloudlets，特定时间为每个任务分配一定量的CPU和内存资源，循环方式执行
+        for (int i = 0; i < vms*0.4; i++) {
+            vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerDynamicWorkload(mips1, pesNumber1));
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips1, pesNumber1, ram1, bw1, size1, vmm1, new NetworkCloudletSpaceSharedScheduler());
+            list.add(vm[i]);
+        }
+        for (int i = (int)(vms*0.4); i < (int)(vms*0.7); i++) {
+
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerSpaceShared());
+            //vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new NetworkCloudletSpaceSharedScheduler());
+            vm[i] = new Vm(i, userId, mips2, pesNumber2, ram2, bw2, size2, vmm2, new CloudletSchedulerDynamicWorkload(mips2, pesNumber2));
+            list.add(vm[i]);
+
+        }
+        for (int i = (int)(vms*0.7); i < vms; i++) {
+            //vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerSpaceShared());
+            vm[i] = new Vm(i, userId, mips3, pesNumber3, ram3, bw3, size3, vmm3, new CloudletSchedulerDynamicWorkload(mips3, pesNumber3));
+            list.add(vm[i]);
         }
         return list;
     }
@@ -406,6 +459,7 @@ public class MOPSO_Scheduler {
             datacenter = new Datacenter[Constants.NO_OF_DATA_CENTERS];
             //管理-数据中心
             datacenter[0] = DatacenterCreator.createDatacenter("Datacenter_manage",0,1);
+
             //设计-数据中心
             for (int i = 1; i < 3; i++) {
                 datacenter[i] = DatacenterCreator.createDatacenter("Datacenter_design" + i,0,2);
@@ -466,12 +520,14 @@ public class MOPSO_Scheduler {
             CloudSim.startSimulation();
 
             List<Cloudlet> newList = broker.getCloudletReceivedList();
-            List<Vm> vmList = broker.getVmList();
+            //List<Vm> vmList = broker.getVmList();
 
             CloudSim.stopSimulation();
 
             //printCloudletList(newList);
             PrintResults(newList);
+            PrintLatency(newList);
+            PrintStartTime(newList);
 
             Log.printLine(MOPSO_Scheduler.class.getName() + " finished!");
         } catch (Exception e) {
@@ -569,6 +625,66 @@ public class MOPSO_Scheduler {
         Log.printLine("================ Execution Result Ends here ==================");
         Log.printLine("mxFinishTime:"+mxFinishTime);
         return mxFinishTime;
+    }
+
+
+    private static double PrintStartTime(List<Cloudlet> list) {
+        int size = list.size();
+        Cloudlet cloudlet;
+
+        //UtilizationModelStochastic UtilizationModelStochastic = new UtilizationModelStochastic();
+        //UtilizationModelPlanetLabInMemory UtilizationMode = new UtilizationModelPlanetLabInMemory();
+        //UtilizationModelFull UtilizationModelFull = new UtilizationModelFull();
+        Log.printLine("================ Execution Result Latency ==================");
+
+        double maxStartTime = 0;
+        double StartTime = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            cloudlet = list.get(i);
+
+            if (cloudlet.getStatus()== Cloudlet.SUCCESS)
+            {
+                StartTime = cloudlet.getExecStartTime();
+            }
+            maxStartTime = Math.max(maxStartTime, StartTime);
+        }
+        Log.printLine("maxStartTime:"+maxStartTime);
+        return maxStartTime;
+    }
+
+    private static double PrintLatency(List<Cloudlet> list) {
+        int size = list.size();
+        Cloudlet cloudlet;
+
+        //UtilizationModelStochastic UtilizationModelStochastic = new UtilizationModelStochastic();
+        //UtilizationModelPlanetLabInMemory UtilizationMode = new UtilizationModelPlanetLabInMemory();
+        //UtilizationModelFull UtilizationModelFull = new UtilizationModelFull();
+        Log.printLine("================ Execution Result Latency ==================");
+
+        double mxLatencyTime = 0;
+        double LatencyTime = 0;
+        double AvgLatencyTime = 0;
+        double totalLatencyTime = 0;
+        int sucnum = 0;
+        DecimalFormat dft = new DecimalFormat("###.##");
+        for (int i = 0; i < size; i++)
+        {
+            cloudlet = list.get(i);
+
+            if (cloudlet.getStatus()== Cloudlet.SUCCESS)
+            {
+                LatencyTime = cloudlet.getFinishTime()-cloudlet.getExecStartTime();
+                totalLatencyTime += LatencyTime;
+                sucnum++;
+            }
+            mxLatencyTime = Math.max(mxLatencyTime, LatencyTime);
+        }
+        AvgLatencyTime = Calculator.div(totalLatencyTime,sucnum);
+        Log.printLine("mxLatencyTime:"+mxLatencyTime);
+        Log.printLine("AvgLatencyTime:"+AvgLatencyTime);
+        return mxLatencyTime;
     }
 
     public static Vm getVmById(int vmId) {

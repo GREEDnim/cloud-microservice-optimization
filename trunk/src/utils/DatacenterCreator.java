@@ -207,6 +207,7 @@ public class DatacenterCreator {
         // 6. Finally, we need to create a PowerDatacenter object.
         Datacenter datacenter = null;
         try {
+            //datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList),storageList, 0);
             datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
             //datacenter = new NetworkDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
         } catch (Exception e) {

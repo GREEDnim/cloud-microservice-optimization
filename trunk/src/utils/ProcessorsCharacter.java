@@ -19,15 +19,16 @@ package utils;
  */
 
 public class ProcessorsCharacter {
+
 	/**
-	 * 类型1-管理：带宽>内存>存储>计算
+	 * 类型1-运营数据中心：带宽>内存>存储>计算 Intel-Core_i7_2600k
 	 */
 	public class Type_manage{
 		public static final int mips = 128300;
 		public static final int cores = 6;
-		public static final long storage = 2000000L;//2
-		public static final int bw = 200000;//1
-		public static final int ram = 20000;//2
+		public static final long storage = 2000000L;
+		public static final int bw = 200000;
+		public static final int ram = 20000;
 		public static final double time_zone = 10.0;
 		public static final double cost = 3.0;
 		public static final double costPerMem = 0.05;
@@ -35,11 +36,11 @@ public class ProcessorsCharacter {
 		public static final double costPerBw = 0.1;
 	}
 	/**
-	 * 类型2-设计:计算>内存>带宽>存储
+	 * 类型2-设计数据中心:计算>内存>带宽>存储 Intel-Core_i7_Extreme_Edition_3960X
 	 */
 	public class Type_design{
-		public static final int mips = 177730;//1
-		public static final int cores = 8;//1
+		public static final int mips = 177730;
+		public static final int cores = 8;
 		public static final long storage = 1000000L;
 		public static final int bw = 150000;
 		public static final int ram = 30000;//2
@@ -50,7 +51,7 @@ public class ProcessorsCharacter {
 		public static final double costPerBw = 0.1;
 	}
 	/**
-	 * 类型3-施工：存储>计算>内存>带宽
+	 * 类型3-施工数据中心：存储>计算>内存>带宽 Intel_AMD-FX_8150_Eight_core
 	 */
 	public class Type_build {
 		public static final int mips = 108890;
@@ -66,12 +67,13 @@ public class ProcessorsCharacter {
 	}
 
 
-
-
-
 	//参数备份
 	public  class Datacente_Intel{
-		
+
+
+		/**
+		 * 类型2-设计:计算>内存>带宽>存储
+		 */
 		public class Core_i7_Extreme_Edition_3960X{
 			public static final int mips = 177730;
 			public static final int cores = 6;
@@ -84,7 +86,10 @@ public class ProcessorsCharacter {
 			public static final int mips = 147600;
 			public static final int cores = 6;
 		}
-		
+
+		/**
+		 * 类型1-管理：带宽>内存>存储>计算
+		 */
 		public class Core_i7_2600k{
 			public static final int mips = 128300;
 			public static final int cores = 4;
@@ -122,6 +127,10 @@ public class ProcessorsCharacter {
 	}
 	
 	public class Datacente_Intel_AMD{
+
+		/**
+		 * 类型3-施工：存储>计算>内存>带宽
+		 */
 		public class FX_8150_Eight_core{
 			public static final int mips = 108890;
 			public static final int cores = 8;
