@@ -1,8 +1,6 @@
 package PSO;
 
-import MOPSO.MOPSO_Scheduler;
 import net.sourceforge.jswarm_pso.FitnessFunction;
-import sun.misc.VM;
 import utils.Calculator;
 import utils.Constants;
 import utils.GenerateMatrices;

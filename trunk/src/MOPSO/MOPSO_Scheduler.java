@@ -3,11 +3,7 @@ package MOPSO;
 
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudlet;
-import org.cloudbus.cloudsim.network.datacenter.NetworkCloudletSpaceSharedScheduler;
-import sun.util.resources.ga.LocaleNames_ga;
 import utils.*;
-
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
