@@ -5,7 +5,9 @@ import main.services.Dockerfile
 import main.infrastructure.LinuxVm
 import org.cloudbus.cloudsim.Cloudlet
 import org.cloudbus.cloudsim.DatacenterBroker
+import org.cloudbus.cloudsim.Log
 import org.cloudbus.cloudsim.core.CloudSim
+import java.text.DecimalFormat
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -59,6 +61,30 @@ class Simulator (
         val dockerfileTrace = datacenterBroker.getCloudletReceivedList<Cloudlet>()
         // TODO: understand what gets returned and print the trace (use this to plot the graphs and etc)
         CloudSim.stopSimulation()
+        reportGeneration(dockerfileTrace)
+    }
+
+    private fun reportGeneration(dockerfileTrace: List<Cloudlet>){
+        val indent = "    "
+        Log.printLine()
+        Log.printLine("========== RUN REPORT ==========")
+        Log.printLine("DOCKER ID" + indent + "STATUS" + indent
+                + "Claudius ID" + indent + "VM ID" + indent + indent + "Time" + indent + "Service Start" + indent + "Service Finish")
+
+        val precision = DecimalFormat("###.##")
+
+        for(i in 0 until microServices) {
+            val task = dockerfileTrace[i]
+            Log.printLine(indent + task.cloudletId + indent + indent)
+
+            if (task.status == Cloudlet.SUCCESS) {
+                Log.print("SUCCESS")
+                Log.printLine(indent + indent + task.resourceId + indent + indent + indent + task.vmId
+                        + indent + indent + indent + precision.format(task.actualCPUTime)
+                        + indent + indent + precision.format(task.execStartTime) + indent + indent + indent + precision.format(task.finishTime))
+                // TODO: compute other averages / percentage based on runtime etc
+            }
+        }
     }
 }
 
