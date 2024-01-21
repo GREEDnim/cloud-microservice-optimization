@@ -71,23 +71,25 @@ class Simulator (
     private fun reportGeneration(dockerfileTrace: List<Cloudlet>){
 
         checkDependencies("after simulation")
-        val indent = "    "
-        Log.printLine()
-        Log.printLine("========== RUN REPORT ==========")
-        Log.printLine("DOCKER ID" + indent + "STATUS" + indent
-                + "Claudius ID" + indent + "VM ID" + indent + indent + "Time" + indent + "Service Start" + indent + "Service Finish")
-
+        val formatString = "%-15s%-15s%-15s%-15s%-10s%-15s%-15s"
+        val header = String.format(formatString, "DOCKER ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish")
+        println("========== RUN REPORT ==========")
+        println(header)
         val precision = DecimalFormat("###.##")
 
         for(i in 0 until microServices) {
             val task = dockerfileTrace[i]
-            Log.printLine(indent + task.cloudletId + indent + indent)
 
             if (task.status == Cloudlet.SUCCESS) {
-                Log.print("SUCCESS")
-                Log.printLine(indent + indent + task.resourceId + indent + indent + indent + task.vmId
-                        + indent + indent + indent + precision.format(task.actualCPUTime)
-                        + indent + indent + precision.format(task.execStartTime) + indent + indent + indent + precision.format(task.finishTime))
+                val data = String.format(formatString,
+                        task.cloudletId,
+                        "SUCCESS",
+                        datacenter.id,
+                        task.vmId,
+                        precision.format(task.actualCPUTime),
+                        precision.format(task.execStartTime),
+                        precision.format(task.finishTime))
+                println(data)
                 // TODO: compute other averages / percentage based on runtime etc
             }
         }
