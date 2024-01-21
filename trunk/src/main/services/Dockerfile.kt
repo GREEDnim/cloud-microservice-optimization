@@ -1,5 +1,6 @@
 package main.services
 import org.cloudbus.cloudsim.Cloudlet
+import org.cloudbus.cloudsim.UtilizationModel
 import org.cloudbus.cloudsim.UtilizationModelFull
 
 /** Represents a microservices hosted using Dockerfile on a VM
@@ -18,16 +19,43 @@ data class Dockerfile (
         val responsePayload: Long,
 ) {
     private val usageCap = UtilizationModelFull()
-    val task = Cloudlet(
+    val task = Task(
             serviceId,
             serviceSpeed,
             cores,
             requestPayload,
             responsePayload,
-            usageCap,
-            usageCap,
+            1,
             usageCap
     )
+//    private val test = printGroupId()
+//
+//    private fun printGroupId() {
+//        val test: Cloudlet = task
+//        val forcedTask = test as Task
+//        println(forcedTask.groupId)
+//    }
+}
+
+class Task(
+        cloudletId: Int,
+        cloudletLength: Long,
+        pesNumber: Int,
+        cloudletFileSize: Long,
+        cloudletOutputSize: Long,
+        val groupId: Int,
+        usageCap: UtilizationModel = UtilizationModelFull(),
+) : Cloudlet(
+        cloudletId,
+        cloudletLength,
+        pesNumber,
+        cloudletFileSize,
+        cloudletOutputSize,
+        usageCap,
+        usageCap,
+        usageCap
+) {
+    // You can add additional properties and methods for the Task class if needed
 }
 
 // Dockerfiles - Tasks operations

@@ -1,16 +1,15 @@
 package main.simulation
 
 import main.infrastructure.Claudius
-import main.services.Dockerfile
 import main.infrastructure.LinuxVm
+import main.services.Dockerfile
 import org.cloudbus.cloudsim.Cloudlet
 import org.cloudbus.cloudsim.DatacenterBroker
 import org.cloudbus.cloudsim.Host
-import org.cloudbus.cloudsim.Log
 import org.cloudbus.cloudsim.Vm
 import org.cloudbus.cloudsim.core.CloudSim
 import java.text.DecimalFormat
-import java.util.Calendar
+import java.util.*
 import kotlin.random.Random
 
 /**
