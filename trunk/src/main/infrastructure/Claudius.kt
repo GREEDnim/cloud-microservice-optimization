@@ -14,7 +14,7 @@ class Claudius {
 
     // Host Configs
     private val mips = 5_000.0; // MIPS (Million Instructions Per Second)
-    private val hostId = 0
+    private val hostId = 1
     private val ram = 2_048 // host memory (MB)
     private val storage = 20_000L // host storage
     private val bw = 1_000L // Mbps

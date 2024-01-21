@@ -5,7 +5,9 @@ import main.services.Dockerfile
 import main.infrastructure.LinuxVm
 import org.cloudbus.cloudsim.Cloudlet
 import org.cloudbus.cloudsim.DatacenterBroker
+import org.cloudbus.cloudsim.Host
 import org.cloudbus.cloudsim.Log
+import org.cloudbus.cloudsim.Vm
 import org.cloudbus.cloudsim.core.CloudSim
 import java.text.DecimalFormat
 import java.util.Calendar
@@ -25,16 +27,14 @@ class Simulator (
         private val hosts: Int,
 ) {
 
-    val calander = Calendar.getInstance()
-    val traceFlag = true
-    val init=CloudSim.init(1, calander, traceFlag)
+    val init = CloudSim.init(1, Calendar.getInstance(), true)
 
     val datacenter = connectToDatacenter(hosts).datacenter
     val datacenterBroker = DatacenterBroker("Broker")
-    val vm = LinuxVm(algorithmType).instance
-    val containers = containerizeDockerfiles(microServices)
+    val vm = LinuxVm(algorithmType, datacenterBroker.id).instance
+    val containers = containerizeDockerfiles(microServices, datacenterBroker.id)
 
-    private fun containerizeDockerfiles(count: Int): List<Dockerfile> {
+    private fun containerizeDockerfiles(count: Int, brokerId: Int): List<Dockerfile> {
         val dockerfiles = mutableListOf<Dockerfile>()
         val random = Random.Default
 
@@ -45,6 +45,7 @@ class Simulator (
             val responsePayload = random.nextLong(3_072L, 5_120L) // 3-5KB
 
             val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload)
+            dockerfile.task.userId = brokerId
             dockerfiles.add(dockerfile)
         }
 
@@ -56,8 +57,10 @@ class Simulator (
     }
 
     fun simulate(){
+        checkDependencies("before submission")
         datacenterBroker.submitVmList(listOf(vm))
         datacenterBroker.submitCloudletList(containers.map { it.task })
+        checkDependencies("after submission")
         CloudSim.startSimulation()
         val dockerfileTrace = datacenterBroker.getCloudletReceivedList<Cloudlet>()
         // TODO: understand what gets returned and print the trace (use this to plot the graphs and etc)
@@ -66,6 +69,8 @@ class Simulator (
     }
 
     private fun reportGeneration(dockerfileTrace: List<Cloudlet>){
+
+        checkDependencies("after simulation")
         val indent = "    "
         Log.printLine()
         Log.printLine("========== RUN REPORT ==========")
@@ -86,6 +91,14 @@ class Simulator (
                 // TODO: compute other averages / percentage based on runtime etc
             }
         }
+    }
+
+    fun checkDependencies(phase: String){
+        println("Dependencies: $phase phase")
+        println("VMs: ${datacenter.getVmList<Vm>()} ${datacenterBroker.getVmList<Vm>()} ${datacenterBroker.getVmsCreatedList<Vm>()}")
+        println("HOST: ${datacenter.getHostList<Host>()} ${vm.host}")
+        println("TASK: ${datacenterBroker.getCloudletSubmittedList<Cloudlet>()}")
+        println("BRK: ${datacenterBroker.id}")
     }
 }
 

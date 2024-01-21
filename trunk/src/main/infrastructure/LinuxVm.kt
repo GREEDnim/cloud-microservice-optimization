@@ -7,11 +7,11 @@ import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 /**
 * A custom Linux Virtual Machine
 */
-class LinuxVm(val algorithmType: AlgorithmType) {
+class LinuxVm(val algorithmType: AlgorithmType, val brokerId: Int) {
 
     // VM configs
-    private var vmId = 0; // VM ID
-    private var userId = 1 // user ID
+    private var vmId = 1; // VM ID
+//    private var userId = 1 // user ID
     private var mips = 4_000.0; // MIPS (Million Instructions Per Second)
     private var numberOfPes = 1; // Number of CPU cores
     private var ram = 1_024; // VM memory (MB)
@@ -19,7 +19,7 @@ class LinuxVm(val algorithmType: AlgorithmType) {
     private var size = 10_000L; // Storage (MB)
     private var vmm = "Xen"; // Virtual Machine Monitor, or 'Hypervisor'
 
-    val instance = Vm(vmId, userId, mips, numberOfPes, ram, bw, size, vmm, chooseScheduler())
+    val instance = Vm(vmId, brokerId, mips, numberOfPes, ram, bw, size, vmm, chooseScheduler())
 
     private fun chooseScheduler(): CloudletScheduler {
         // TODO: make custom Scheduler by extending CloudletScheduler
