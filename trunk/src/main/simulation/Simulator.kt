@@ -22,6 +22,11 @@ class Simulator (
         private val algorithmType: AlgorithmType,
         private val hosts: Int,
 ) {
+
+    val calander = Calendar.getInstance()
+    val traceFlag = true
+    val init=CloudSim.init(1, calander, traceFlag)
+
     val datacenter = connectToDatacenter(hosts).datacenter
     val datacenterBroker = DatacenterBroker("Broker")
     val vm = LinuxVm(algorithmType).instance
@@ -49,10 +54,6 @@ class Simulator (
     }
 
     fun simulate(){
-        val calander = Calendar.getInstance()
-        val traceFlag = true
-
-        CloudSim.init(1, calander, traceFlag)
         datacenterBroker.submitVmList(listOf(vm))
         datacenterBroker.submitCloudletList(containers.map { it.task })
         CloudSim.startSimulation()
@@ -70,6 +71,11 @@ enum class AlgorithmType {
 private fun serializeDockerfiles(){
     // TODO: write Dockerfiles into a file and read from there instead of regenerating everytime. also for consistent simulation across algorithms
     // and put into a separate file pls
+}
+
+fun main(){
+    val simulator = Simulator(10,AlgorithmType.FCFS,1)
+    simulator.simulate()
 }
 
 // TODO: write output in files

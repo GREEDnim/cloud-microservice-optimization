@@ -1,16 +1,11 @@
 package main.infrastructure
 
-import org.cloudbus.cloudsim.Datacenter
-import org.cloudbus.cloudsim.DatacenterCharacteristics
-import org.cloudbus.cloudsim.Host
-import org.cloudbus.cloudsim.Pe
-import org.cloudbus.cloudsim.Storage
-import org.cloudbus.cloudsim.VmAllocationPolicySimple
-import org.cloudbus.cloudsim.VmSchedulerTimeSharedOverSubscription
+import org.cloudbus.cloudsim.*
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple
-import java.util.LinkedList
+import java.util.*
+
 
 /**
  * This is our physical datacenter to mimic serverless environment
@@ -49,7 +44,6 @@ class Claudius {
 
     private val claudiusMetadata =
             DatacenterCharacteristics(arch, os, vmm, hosts, timeZone,costCompute, costMem, costStorage, costBw)
-
     val datacenter = Datacenter("claudius", claudiusMetadata, vmPolicy, storageList, 0.0)
 }
 
