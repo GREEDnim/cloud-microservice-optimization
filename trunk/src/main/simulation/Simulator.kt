@@ -35,15 +35,15 @@ class Simulator (
 
     private fun containerizeDockerfiles(count: Int, brokerId: Int): List<Dockerfile> {
         val dockerfiles = mutableListOf<Dockerfile>()
-        val random = Random.Default
+        val random = Random(System.currentTimeMillis())
 
         for (serviceId in 1..count) {
-            val serviceSpeed = random.nextLong(600L, 1_200L) // between 600 and 1200 Million Instructions
+            val serviceSpeed = random.nextLong(6000L, 1_2000L) // between 600 and 1200 Million Instructions
             val cores = 1
             val requestPayload = random.nextLong(1_024L, 2_048L)  // 1-2KB
             val responsePayload = random.nextLong(3_072L, 5_120L) // 3-5KB
-
-            val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload)
+            val groupId=random.nextInt(0,3);
+            val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload,groupId,microServices)
             dockerfile.task.userId = brokerId
             dockerfiles.add(dockerfile)
         }

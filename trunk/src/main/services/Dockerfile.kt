@@ -17,6 +17,8 @@ data class Dockerfile (
         val cores: Int,
         val requestPayload: Long,
         val responsePayload: Long,
+        val groupId:Int,
+        val microServices:Int
 ) {
     private val usageCap = UtilizationModelFull()
     val task = Task(
@@ -25,7 +27,8 @@ data class Dockerfile (
             cores,
             requestPayload,
             responsePayload,
-            1,
+            groupId,
+            microServices,
             usageCap
     )
 //    private val test = printGroupId()
@@ -44,6 +47,7 @@ class Task(
         cloudletFileSize: Long,
         cloudletOutputSize: Long,
         val groupId: Int,
+        val microServices:Int,
         usageCap: UtilizationModel = UtilizationModelFull(),
 ) : Cloudlet(
         cloudletId,
