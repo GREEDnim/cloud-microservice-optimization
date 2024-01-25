@@ -3,6 +3,7 @@ package main.simulation
 import main.infrastructure.Claudius
 import main.infrastructure.LinuxVm
 import main.services.Dockerfile
+import main.services.Task
 import org.cloudbus.cloudsim.Cloudlet
 import org.cloudbus.cloudsim.DatacenterBroker
 import org.cloudbus.cloudsim.Host
@@ -70,18 +71,19 @@ class Simulator (
     private fun reportGeneration(dockerfileTrace: List<Cloudlet>){
 
         checkDependencies("after simulation")
-        val formatString = "%-15s%-15s%-15s%-15s%-10s%-15s%-15s"
-        val header = String.format(formatString, "DOCKER ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish")
+        val formatString = "%-15s%-15s%-15s%-15s%-15s%-10s%-15s%-15s"
+        val header = String.format(formatString, "DOCKER ID","GROUP ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish")
         println("========== RUN REPORT ==========")
         println(header)
         val precision = DecimalFormat("###.##")
 
         for(i in 0 until microServices) {
-            val task = dockerfileTrace[i]
+            val task = dockerfileTrace[i] as Task
 
             if (task.status == Cloudlet.SUCCESS) {
                 val data = String.format(formatString,
                         task.cloudletId,
+                        task.groupId,
                         "SUCCESS",
                         datacenter.id,
                         task.vmId,

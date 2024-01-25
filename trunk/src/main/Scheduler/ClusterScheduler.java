@@ -8,6 +8,8 @@ import org.cloudbus.cloudsim.ResCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ClusterScheduler extends CloudletSchedulerSpaceShared {
@@ -17,7 +19,22 @@ public class ClusterScheduler extends CloudletSchedulerSpaceShared {
         System.out.println("gid: "+task.getGroupId()+" tskid :"+task.getCloudletId());
         System.out.println("------sub-------");
 
-        if ((currentCpus - usedPes) >= cloudlet.getNumberOfPes() && task.getCloudletId()==task.getMicroServices() ) {
+        ResCloudlet cur = new ResCloudlet(cloudlet);
+        cur.setCloudletStatus(Cloudlet.QUEUED);
+        getCloudletWaitingList().add(cur);
+
+        if(task.getCloudletId()!=task.getMicroServices()) return 0.0;
+        Collections.sort(getCloudletWaitingList(), new Comparator<ResCloudlet>() {
+            @Override
+            public int compare(ResCloudlet o1, ResCloudlet o2) {
+                Task a=(Task) o1.getCloudlet();
+                Task b=(Task) o2.getCloudlet();
+                return a.getGroupId()-b.getGroupId();
+            }
+        });
+
+        cloudlet=getCloudletWaitingList().remove(0).getCloudlet();
+        if ((currentCpus - usedPes) >= cloudlet.getNumberOfPes() ) {
             ResCloudlet rcl = new ResCloudlet(cloudlet);
             rcl.setCloudletStatus(Cloudlet.INEXEC);
             for (int i = 0; i < cloudlet.getNumberOfPes(); i++) {
@@ -25,11 +42,6 @@ public class ClusterScheduler extends CloudletSchedulerSpaceShared {
             }
             getCloudletExecList().add(rcl);
             usedPes += cloudlet.getNumberOfPes();
-        } else {// no enough free PEs: go to the waiting queue
-            ResCloudlet rcl = new ResCloudlet(cloudlet);
-            rcl.setCloudletStatus(Cloudlet.QUEUED);
-            getCloudletWaitingList().add(rcl);
-            return 0.0;
         }
 
         // calculate the expected time for cloudlet completion
