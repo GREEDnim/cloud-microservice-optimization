@@ -44,7 +44,7 @@ class Simulator (
             val requestPayload = random.nextLong(1_024L, 2_048L)  // 1-2KB
             val responsePayload = random.nextLong(3_072L, 5_120L) // 3-5KB
             val groupId=random.nextInt(0,3);
-            val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload,groupId,microServices)
+            val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload,groupId)
             dockerfile.task.userId = brokerId
             dockerfiles.add(dockerfile)
         }

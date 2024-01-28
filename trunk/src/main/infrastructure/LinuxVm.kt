@@ -1,9 +1,8 @@
 package main.infrastructure
-import main.Scheduler.ClusterScheduler
+import main.Scheduler.FCFSClusterScheduler
+import main.Scheduler.SJFClusterScheduler
 import main.simulation.AlgorithmType
 import org.cloudbus.cloudsim.CloudletScheduler
-import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared
 import org.cloudbus.cloudsim.Vm
 
 /**
@@ -26,8 +25,8 @@ class LinuxVm(val algorithmType: AlgorithmType, val brokerId: Int) {
     private fun chooseScheduler(): CloudletScheduler {
         // TODO: make custom Scheduler by extending CloudletScheduler
         return when(algorithmType){
-            AlgorithmType.FCFS -> ClusterScheduler()
-            AlgorithmType.SJF -> ClusterScheduler()
+            AlgorithmType.FCFS -> FCFSClusterScheduler()
+            AlgorithmType.SJF -> SJFClusterScheduler()
         }
     }
 }
