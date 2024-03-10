@@ -4,6 +4,7 @@ import main.infrastructure.Claudius
 import main.infrastructure.LinuxVm
 import main.services.Dockerfile
 import main.services.Task
+import main.Aggregator.RequestAggregator
 import org.cloudbus.cloudsim.Cloudlet
 import org.cloudbus.cloudsim.DatacenterBroker
 import org.cloudbus.cloudsim.Host
@@ -30,7 +31,7 @@ class Simulator (
     val init = CloudSim.init(1, Calendar.getInstance(), true)
 
     val datacenter = connectToDatacenter(hosts).datacenter
-    val datacenterBroker = DatacenterBroker("Broker")
+    val datacenterBroker = RequestAggregator("Broker")
     val vm = LinuxVm(algorithmType, datacenterBroker.id).instance
     val containers = containerizeDockerfiles(microServices, datacenterBroker.id)
 
@@ -107,7 +108,8 @@ class Simulator (
 
 enum class AlgorithmType {
     FCFS,
-    SJF
+    SJF,
+    ANT
 }
 
 private fun serializeDockerfiles(){
@@ -116,7 +118,7 @@ private fun serializeDockerfiles(){
 }
 
 fun main(){
-    val simulator = Simulator(10,AlgorithmType.FCFS,1)
+    val simulator = Simulator(10,AlgorithmType.ANT,1)
     simulator.simulate()
 }
 

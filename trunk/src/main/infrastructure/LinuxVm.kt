@@ -1,4 +1,5 @@
 package main.infrastructure
+import main.Scheduler.AntColonyOptimizedScheduler
 import main.Scheduler.FCFSClusterScheduler
 import main.Scheduler.SJFClusterScheduler
 import main.simulation.AlgorithmType
@@ -27,6 +28,7 @@ class LinuxVm(val algorithmType: AlgorithmType, val brokerId: Int) {
         return when(algorithmType){
             AlgorithmType.FCFS -> FCFSClusterScheduler()
             AlgorithmType.SJF -> SJFClusterScheduler()
+            AlgorithmType.ANT -> AntColonyOptimizedScheduler()
         }
     }
 }
