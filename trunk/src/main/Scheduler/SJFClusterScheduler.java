@@ -17,11 +17,13 @@ public class SJFClusterScheduler extends CloudletSchedulerSpaceShared {
                 Task a=(Task) o1.getCloudlet();
                 Task b=(Task) o2.getCloudlet();
 
-                int aPriority=groupPriority.get(a.getGroupId());
-                int bPriority=groupPriority.get(b.getGroupId());
+                return (int)(a.getCloudletLength()-b.getCloudletLength());
 
-                if(aPriority==bPriority) return (int)(a.getCloudletLength()-b.getCloudletLength());
-                return aPriority-bPriority;
+//                int aPriority=groupPriority.get(a.getGroupId());
+//                int bPriority=groupPriority.get(b.getGroupId());
+//
+////                if(aPriority==bPriority) return (int)(a.getCloudletLength()-b.getCloudletLength());
+//                return aPriority-bPriority;
             }
         };
         return  comp;

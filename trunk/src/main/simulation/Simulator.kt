@@ -10,6 +10,8 @@ import org.cloudbus.cloudsim.DatacenterBroker
 import org.cloudbus.cloudsim.Host
 import org.cloudbus.cloudsim.Vm
 import org.cloudbus.cloudsim.core.CloudSim
+import java.io.File
+import java.io.FileWriter
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.random.Random
@@ -37,14 +39,14 @@ class Simulator (
 
     private fun containerizeDockerfiles(count: Int, brokerId: Int): List<Dockerfile> {
         val dockerfiles = mutableListOf<Dockerfile>()
-        val random = Random(System.currentTimeMillis())
+        val random = Random(69)
 
         for (serviceId in 1..count) {
             val serviceSpeed = random.nextLong(6000L, 1_2000L) // between 600 and 1200 Million Instructions
             val cores = 1
             val requestPayload = random.nextLong(1_024L, 2_048L)  // 1-2KB
             val responsePayload = random.nextLong(3_072L, 5_120L) // 3-5KB
-            val groupId=random.nextInt(0,3);
+            val groupId=random.nextInt(0,10);
             val dockerfile = Dockerfile(serviceId, serviceSpeed, cores, requestPayload, responsePayload,groupId)
             dockerfile.task.userId = brokerId
             dockerfiles.add(dockerfile)
@@ -72,10 +74,21 @@ class Simulator (
     private fun reportGeneration(dockerfileTrace: List<Cloudlet>){
 
         checkDependencies("after simulation")
-        val formatString = "%-15s%-15s%-15s%-15s%-15s%-10s%-15s%-15s"
-        val header = String.format(formatString, "DOCKER ID","GROUP ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish")
+//        val formatString = "%-15s%-15s%-15s%-15s%-15s%-10s%-15s%-15s"
+//        val header = String.format(formatString, "DOCKER ID","GROUP ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish")
+
+        val formatString = "%s,%s,%s,%s,%s,%s,%s,%s,%s"
+        val header = String.format(formatString, "DOCKER ID","GROUP ID", "STATUS", "Claudius ID", "VM ID", "Time", "Start", "Finish","cloudletLength")
+
         println("========== RUN REPORT ==========")
+        val filePath ="Z:\\cloud-microservice-optimization\\trunk\\src\\main\\outputs\\${algorithmType}.csv"
+        var writer = FileWriter(filePath)
+        writer.close()
+        writer = FileWriter(filePath, true)
+        writer.write("${header}\n")
+
         println(header)
+
         val precision = DecimalFormat("###.##")
 
         for(i in 0 until microServices) {
@@ -83,18 +96,22 @@ class Simulator (
 
             if (task.status == Cloudlet.SUCCESS) {
                 val data = String.format(formatString,
-                        task.cloudletId,
-                        task.groupId,
-                        "SUCCESS",
-                        datacenter.id,
-                        task.vmId,
-                        precision.format(task.actualCPUTime),
-                        precision.format(task.execStartTime),
-                        precision.format(task.finishTime))
+                    task.cloudletId,
+                    task.groupId,
+                    "SUCCESS",
+                    datacenter.id,
+                    task.vmId,
+                    precision.format(task.actualCPUTime),
+                    precision.format(task.execStartTime),
+                    precision.format(task.finishTime),
+                    task.cloudletLength
+                )
                 println(data)
+                writer.write("${data}\n")
                 // TODO: compute other averages / percentage based on runtime etc
             }
         }
+        writer.close()
     }
 
     fun checkDependencies(phase: String){
@@ -118,7 +135,7 @@ private fun serializeDockerfiles(){
 }
 
 fun main(){
-    val simulator = Simulator(10,AlgorithmType.ANT,1)
+    val simulator = Simulator(1000,AlgorithmType.SJF,1)
     simulator.simulate()
 }
 

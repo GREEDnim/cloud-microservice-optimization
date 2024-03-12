@@ -33,7 +33,7 @@ public class FCFSClusterScheduler extends CloudletSchedulerSpaceShared {
     }
     public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
 
-        Collections.sort(getCloudletWaitingList(),getComparator());
+//        Collections.sort(getCloudletWaitingList(),getComparator());
         return super.updateVmProcessing(currentTime,mipsShare);
     }
 }
